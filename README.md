@@ -1,10 +1,12 @@
 # MIMesh
 
-**MIMesh** (Multi-resolution Interpolation Mesh) is a software tool for performing 3D morphing between two semi-regular meshes. It implements the method proposed in our Pacific Graphics 2001 paper:
+**MIMesh** (Multi-resolution Interpolation Mesh) is a software tool for performing 3D morphing between two semi-regular meshes. It demonstrates the method proposed in our Pacific Graphics 2001 paper:
 
 - Takashi Michikawa, Takashi Kanai, Masahiro Fujita, Hiroaki Chiyokura:
   *"Multiresolution Interpolation Meshes"*,
   Proceedings of the 9th Pacific Graphics International Conference (Pacific Graphics 2001), pp. 60–69, October 2001.
+
+Note that this software is for demonstration purposes only and does not include an implementation of the method.
 
 The software was originally developed in 2001 by [Takashi Michikawa](https://github.com/tmichi) and [Masahiro Fujita](https://github.com/syoyo), and was updated in 2025 to support building and running on Windows (Visual Studio), macOS, and Linux (Ubuntu).
 
