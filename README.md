@@ -6,7 +6,7 @@
   *"Multiresolution Interpolation Meshes"*,
   Proceedings of the 9th Pacific Graphics International Conference (Pacific Graphics 2001), pp. 60–69, October 2001.
 
-The software was originally developed in 2001 by Takashi Michikawa (@tmichi) and Masahiro Fujita (@syoyo), and was updated in 2025 by Takashi Kanai (@kanait) to support building and running on Windows (Visual Studio), macOS, and Linux (Ubuntu).
+The software was originally developed in 2001 by [Takashi Michikawa](https://github.com/tmichi) and [Masahiro Fujita](https://github.com/syoyo), and was updated in 2025 to support building and running on Windows (Visual Studio), macOS, and Linux (Ubuntu).
 
 ## Getting Started
 
