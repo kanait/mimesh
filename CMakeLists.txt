@@ -5,9 +5,19 @@ endif()
 cmake_minimum_required ( VERSION 3.11 )
 project( mimesh )
 
+# Add module path
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(GLUT REQUIRED)
+if(MSVC)
+        find_package(glfw3 CONFIG REQUIRED)
+endif(MSVC)
+if(UNIX)
+        find_package(GLFW REQUIRED)
+endif(UNIX)
+
 
 SET(CMAKE_C_COMPILER_WORKS 1 CACHE INTERNAL "")
 SET(CMAKE_CXX_COMPILER_WORKS 1 CACHE INTERNAL "")
@@ -26,7 +36,7 @@ add_executable( ${PROJECT_NAME}
                 render-1.0/MR_Patch.h
                 render-1.0/MR_Vec.cxx
                 render-1.0/MR_Vec.h
-                render-1.0/rend.cxx
+                render-1.0/rend_glfw.cxx
                 render-1.0/tga.c
                 render-1.0/tga.h
                 render-1.0/Vec3f.cxx
@@ -41,14 +51,27 @@ target_include_directories( ${PROJECT_NAME}
                             ${OPENGL_INCLUDE_DIR}
                             ${GLEW_INCLUDE_DIR}
                             ${GLUT_INCLUDE_DIR}
+                            ${GLFW_INCLUDE_DIR}
 )
 
-target_link_libraries( ${PROJECT_NAME}
-                       PRIVATE
-                       ${OPENGL_LIBRARIES}
-                       GLEW::GLEW
-                       GLUT::GLUT
-)
+if(MSVC)
+        target_link_libraries( ${PROJECT_NAME}
+                               PRIVATE
+                               ${OPENGL_LIBRARIES}
+                               GLEW::GLEW
+                               GLUT::GLUT
+                               glfw
+        )
+endif(MSVC)
+if(UNIX)
+        target_link_libraries( ${PROJECT_NAME}
+                               PRIVATE
+                               ${OPENGL_LIBRARIES}
+                               GLEW::GLEW
+                               GLUT::GLUT
+                               ${GLFW_LIBRARY}
+        )
+endif(UNIX)
 
 # Set StartUp Project (Option)
 set_property( DIRECTORY PROPERTY VS_STARTUP_PROJECT "mimesh" )

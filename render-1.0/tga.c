@@ -4,7 +4,7 @@
 /* The GIMP -- an image manipulation program
  * Copyright (C) 1995 Spencer Kimball and Peter Mattis
  *
- * $Id: tga.c 2025/04/30 15:12:50 kanai Exp $
+ * $Id: tga.c 2025/05/04 15:39:15 kanai Exp $
  * TrueVision Targa loading and saving file filter for the Gimp.
  * Targa code Copyright (C) 1997 Raphael FRANCOIS and Gordon Matzigkeit
  *
