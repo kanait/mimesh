@@ -12,7 +12,7 @@ The software was originally developed in 2001 by [Takashi Michikawa](https://git
 
 ## Getting Started
 
-To compile the software, you need to have the following dependencies installed: GLUT (FreeGLUT), and GLEW.
+To compile the software, you need to have the following dependencies installed: GLFW3, and GLEW.
 
 After installing these dependencies, run the following commands:
 
@@ -34,14 +34,14 @@ cd ..
 - On **macOS**, you can install dependencies using [Homebrew](https://brew.sh/):
 
   ```bash
-  brew install glew freeglut
+  brew install glew glfw
   ```
 
 - On **Ubuntu**, install dependencies via apt:
 
   ```bash
   sudo apt update
-  sudo apt install build-essential cmake libglew-dev freeglut3-dev
+  sudo apt install build-essential cmake libglew-dev libglfw3-dev
   ```
 
 ## Usage

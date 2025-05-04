@@ -10,7 +10,6 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
-find_package(GLUT REQUIRED)
 if(MSVC)
         find_package(glfw3 CONFIG REQUIRED)
 endif(MSVC)
@@ -37,8 +36,6 @@ add_executable( ${PROJECT_NAME}
                 render-1.0/MR_Vec.cxx
                 render-1.0/MR_Vec.h
                 render-1.0/rend_glfw.cxx
-                render-1.0/tga.c
-                render-1.0/tga.h
                 render-1.0/Vec3f.cxx
                 render-1.0/Vec3f.h
 )
@@ -50,8 +47,8 @@ target_include_directories( ${PROJECT_NAME}
                             PRIVATE
                             ${OPENGL_INCLUDE_DIR}
                             ${GLEW_INCLUDE_DIR}
-                            ${GLUT_INCLUDE_DIR}
                             ${GLFW_INCLUDE_DIR}
+                            ${PROJECT_SOURCE_DIR}/external/stb
 )
 
 if(MSVC)
@@ -59,7 +56,6 @@ if(MSVC)
                                PRIVATE
                                ${OPENGL_LIBRARIES}
                                GLEW::GLEW
-                               GLUT::GLUT
                                glfw
         )
 endif(MSVC)
@@ -68,7 +64,6 @@ if(UNIX)
                                PRIVATE
                                ${OPENGL_LIBRARIES}
                                GLEW::GLEW
-                               GLUT::GLUT
                                ${GLFW_LIBRARY}
         )
 endif(UNIX)

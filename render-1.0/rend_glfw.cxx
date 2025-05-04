@@ -61,7 +61,7 @@ PFNGLGETFINALCOMBINERINPUTPARAMETERFVNVPROC glGetFinalCombinerInputfvNV;
 PFNGLGETFINALCOMBINERINPUTPARAMETERIVNVPROC glGetFinalCombinerInputivNV;
 #endif
 
-#include "tga.h"   // tga format texture image loading
+//#include "tga.h"   // tga format texture image loading
 
 std::vector<std::vector<int> > bidx;//初期補間メッシュのインデックス
 std::vector<std::vector<Vec3f> > pathv;//パスの頂点
@@ -166,8 +166,16 @@ int texture_size = TEXTURE_SIZE256;
 
 //  static int bumpmapping; // toggle bumpmapping
 static GLuint texobj[2];
-static gliGenericImage *src = NULL;
-static gliGenericImage *dest = NULL;
+// static gliGenericImage *src = NULL;
+// static gliGenericImage *dest = NULL;
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+int sw, sh, sc;
+int tw, th, tc;
+unsigned char* src = NULL;
+unsigned char* dest = NULL;
 
 // textures for interpolation
 GLubyte *tmp_texture = NULL;
@@ -191,6 +199,22 @@ bool right_button_pressed = false;
 
 
 int init();
+
+////////////////////////////////////////////////////////////////////////
+unsigned char* stb_load_image( const char* const filename, int& w, int& h, int& comp ) {
+  //int w, h, comp;
+  stbi_set_flip_vertically_on_load(true);
+  unsigned char* image = stbi_load(filename, &w, &h, &comp, STBI_rgb);
+  if(image == nullptr)
+    throw(std::string("Failed to load texture"));
+
+  // unsigned int id = pane.loadTexture( image, w, h, comp );
+
+  // stbi_image_free(image);
+
+  return image;
+}
+
 
 void print_glerror()
 {
@@ -753,10 +777,9 @@ void updateTexture(double param)
 {
   if ( anm_flag )
     {
-      for ( int i = 0; i < src->width * src->height *src->components; i++ )
+      for ( int i = 0; i < sw * sh * sc; i++ )
         {
-          tmp_texture[i] = (GLubyte)( src->pixels[i] * (1.0 - param)
-                                      + dest->pixels[i] * param );
+          tmp_texture[i] = (GLubyte)( src[i] * (1.0 - param) + dest[i] * param );
         }
     }
 
@@ -764,8 +787,8 @@ void updateTexture(double param)
   glBindTexture( GL_TEXTURE_2D, texobj[0] );
   glTexSubImage2D( GL_TEXTURE_2D, 0,
                    0, 0,
-                   src->width, src->height,
-                   src->format, GL_UNSIGNED_BYTE, tmp_texture
+                   sw, sh,
+                   GL_RGB, GL_UNSIGNED_BYTE, tmp_texture
                    );
 
 
@@ -890,6 +913,7 @@ makeNormalizeVectorCubeMap(int size)
   free(pixels);
 }
 
+#if 0
 gliGenericImage *
 readImage(char *filename)
 {
@@ -907,6 +931,7 @@ readImage(char *filename)
 
   return image;
 }
+#endif
 
 //  int loadTexture( gliGenericImage *image, int mipmaps )
 //  {
@@ -915,9 +940,9 @@ readImage(char *filename)
 
 void freeTextures( void )
 {
-  if ( src ) free( src );
-  if ( dest ) free ( dest );
-  if ( tmp_texture ) free( tmp_texture );
+  if ( src != NULL ) stbi_image_free(src);
+  if ( dest != NULL ) stbi_image_free(dest);
+  if ( tmp_texture != NULL ) free( tmp_texture );
 }
 
 // 法線テクスチャの初期化
@@ -925,26 +950,27 @@ int initTextures( int num )
 {
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   // デフォルトの画像の読み込み
+
   if ( num == 0 )
     { // 1024
-      src  = readImage(src1024); dest = readImage(trg1024);
+      src  = stb_load_image(src1024, sw, sh, sc);
+      dest = stb_load_image(trg1024, tw, th, tc);
     }
   else if ( num == 1 )
     { // 512
-      src  = readImage(src512); dest = readImage(trg512);
+      src  = stb_load_image(src512, sw, sh, sc);
+      dest = stb_load_image(trg512, tw, th, tc);
     }
   else
     { // 256
-      src  = readImage(src256); dest = readImage(trg256);
+      src  = stb_load_image(src256, sw, sh, sc);
+      dest = stb_load_image(trg256, tw, th, tc);
     }
 
-  tmp_texture = (GLubyte *)malloc( sizeof(GLubyte) *
-                                   src->width *
-                                   src->height *
-                                   src->components );
-  for ( int i = 0; i < src->width * src->height *src->components; i++ )
+  tmp_texture = (GLubyte *)malloc( sizeof(GLubyte) * sw * sh * sc );
+  for ( int i = 0; i < sw * sh * sc; i++ )
     {
-      tmp_texture[i] = (GLubyte)(src->pixels[i] * (1.0 - pp) + dest->pixels[i] * pp);
+      tmp_texture[i] = (GLubyte)(src[i] * (1.0 - pp) + dest[i] * pp);
       //    tmp_texture[i] = (GLubyte) (src->pixels[i]);
     }
 
@@ -954,11 +980,11 @@ int initTextures( int num )
   //loadTexture( src, 0 );
   int mipmaps = 1;
   if ( mipmaps ) {
-    gluBuild2DMipmaps(GL_TEXTURE_2D, src->components, src->width, src->height,
-                      src->format, GL_UNSIGNED_BYTE, tmp_texture );
+    gluBuild2DMipmaps(GL_TEXTURE_2D, sc, sw, sh,
+                      GL_RGB, GL_UNSIGNED_BYTE, tmp_texture );
   } else {
-    glTexImage2D(GL_TEXTURE_2D, 0, src->components, src->width, src->height, 0,
-                 src->format, GL_UNSIGNED_BYTE, tmp_texture );
+    glTexImage2D(GL_TEXTURE_2D, 0, sc, sw, sh, 0,
+                 GL_RGB, GL_UNSIGNED_BYTE, tmp_texture );
   }
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
