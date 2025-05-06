@@ -5,9 +5,9 @@
 #include <vector>
 #include <cmath>
 
-class Vec3f{
-   public:
-  double x,y,z;
+class Vec3f {
+ public:
+  double x, y, z;
   Vec3f operator=(Vec3f d);
 };
 /*
@@ -23,4 +23,4 @@ Vec3f operator +(Vec3f &a, Vec3f &b)
   return out;
 }*/
 
-#endif // __VEC_3F__
+#endif  // __VEC_3F__

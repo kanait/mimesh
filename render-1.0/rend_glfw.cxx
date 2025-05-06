@@ -14,7 +14,7 @@ using namespace std;
 // #include <windows.h>
 // #endif
 
-//#include <GL/wglext.h>
+// #include <GL/wglext.h>
 
 // #include <GL/glext.h>
 
@@ -22,17 +22,17 @@ using namespace std;
 
 // without normalmap
 GLfloat light_position[] = {0.0, 0.0, 100.0, 0.0};
-GLfloat light_ambient[] =  {0.0, 0.0, 0.0, 1.0};
-GLfloat light_diffuse[] =  {1.0, 1.0, 1.0, 1.0};
+GLfloat light_ambient[] = {0.0, 0.0, 0.0, 1.0};
+GLfloat light_diffuse[] = {1.0, 1.0, 1.0, 1.0};
 GLfloat light_specular[] = {0.0, 0.0, 0.0, 1.0};
 
 #if 0
 GLfloat light_diffuse2[] = {0.6,0.6,0.6,1.0};
 #endif
 
-//#define GLH_EXT_SINGLE_FILE
-//#include "glh_extensions.h"
-//using namespace glh;
+// #define GLH_EXT_SINGLE_FILE
+// #include "glh_extensions.h"
+// using namespace glh;
 
 // #include "extdef.h"
 #include "MR_Patch.h"
@@ -61,12 +61,12 @@ PFNGLGETFINALCOMBINERINPUTPARAMETERFVNVPROC glGetFinalCombinerInputfvNV;
 PFNGLGETFINALCOMBINERINPUTPARAMETERIVNVPROC glGetFinalCombinerInputivNV;
 #endif
 
-//#include "tga.h"   // tga format texture image loading
+// #include "tga.h"   // tga format texture image loading
 
-std::vector<std::vector<int> > bidx;//初期補間メッシュのインデックス
-std::vector<std::vector<Vec3f> > pathv;//パスの頂点
-std::vector<Vec3f> nrms;//パスの頂点
-std::vector<Vec3f> nrmt;//パスの頂点
+std::vector<std::vector<int> > bidx;     // 初期補間メッシュのインデックス
+std::vector<std::vector<Vec3f> > pathv;  // パスの頂点
+std::vector<Vec3f> nrms;                 // パスの頂点
+std::vector<Vec3f> nrmt;                 // パスの頂点
 std::vector<double> weight;
 std::vector<double> param;
 std::vector<MR_Patch> patch;
@@ -118,14 +118,14 @@ int bez_flag = 0;
 int bm_flag = 0;
 
 int vt;
-std::vector<int> fc,fc2;
+std::vector<int> fc, fc2;
 
 /* defines and functuons for per-pixel bumpmapping ----------------------- */
 #define M_PER_PIXEL_SELF_SHADOWING_CLAMP 1
 #define M_PER_PIXEL_SELF_SHADOWING_RAMP 2
 
 /* for texture object */
-//#define DECAL_MAP 1
+// #define DECAL_MAP 1
 
 static int lightnum;
 
@@ -139,23 +139,23 @@ int modulateDiffuse = 1;
 
 // パラメータを計算するときにしか使用しない
 #define TEXTURE_HEIGHT1024 1024
-#define TEXTURE_SIZE1024  126
+#define TEXTURE_SIZE1024 126
 #define TEXTURE_HEIGHT512 512
-#define TEXTURE_SIZE512  62
+#define TEXTURE_SIZE512 62
 #define TEXTURE_HEIGHT256 256
-#define TEXTURE_SIZE256  30
+#define TEXTURE_SIZE256 30
 
 // 1024
-static char *src1024 = "venus1024.tga";
-static char *trg1024 = "tiger1024.tga";
+static char *src1024 = "venus1024.png";
+static char *trg1024 = "tiger1024.png";
 // 512
-static char *src512 = "venus512.tga";
-static char *trg512 = "tiger512.tga";
+static char *src512 = "venus512.png";
+static char *trg512 = "tiger512.png";
 // 256
-static char *src256 = "venus256.tga";
-static char *trg256 = "tiger256.tga";
+static char *src256 = "venus256.png";
+static char *trg256 = "tiger256.png";
 
-#define TEXTURE_BORDER  1
+#define TEXTURE_BORDER 1
 
 int texture_height = TEXTURE_HEIGHT256;
 int texture_size = TEXTURE_SIZE256;
@@ -174,13 +174,13 @@ static GLuint texobj[2];
 
 int sw, sh, sc;
 int tw, th, tc;
-unsigned char* src = NULL;
-unsigned char* dest = NULL;
+unsigned char *src = NULL;
+unsigned char *dest = NULL;
 
 // textures for interpolation
 GLubyte *tmp_texture = NULL;
 
-int initTextures( int );
+int initTextures(int);
 // void initCombiners(int shadowing, int specular, GLfloat diffuse);
 void updateTexture(double param);
 
@@ -197,16 +197,15 @@ bool control_key_pressed = false;
 bool left_button_pressed = false;
 bool right_button_pressed = false;
 
-
 int init();
 
 ////////////////////////////////////////////////////////////////////////
-unsigned char* stb_load_image( const char* const filename, int& w, int& h, int& comp ) {
-  //int w, h, comp;
+unsigned char *stb_load_image(const char *const filename, int &w, int &h,
+                              int &comp) {
+  // int w, h, comp;
   stbi_set_flip_vertically_on_load(true);
-  unsigned char* image = stbi_load(filename, &w, &h, &comp, STBI_rgb);
-  if(image == nullptr)
-    throw(std::string("Failed to load texture"));
+  unsigned char *image = stbi_load(filename, &w, &h, &comp, STBI_rgb);
+  if (image == nullptr) throw(std::string("Failed to load texture"));
 
   // unsigned int id = pane.loadTexture( image, w, h, comp );
 
@@ -215,9 +214,7 @@ unsigned char* stb_load_image( const char* const filename, int& w, int& h, int& 
   return image;
 }
 
-
-void print_glerror()
-{
+void print_glerror() {
   GLenum errCode;
   const GLubyte *errString;
 
@@ -236,12 +233,15 @@ void print_glerror()
  * Return GL_TRUE for success, GL_FALSE for failure (singular matrix)
  */
 
-GLboolean
-invertMatrix(GLdouble *out, const GLdouble *m)
-{
+GLboolean invertMatrix(GLdouble *out, const GLdouble *m) {
   /* NB. OpenGL Matrices are COLUMN major. */
-#define SWAP_ROWS(a, b) { GLdouble *_tmp = a; (a)=(b); (b)=_tmp; }
-#define MAT(m,r,c) (m)[(c)*4+(r)]
+#define SWAP_ROWS(a, b) \
+  {                     \
+    GLdouble *_tmp = a; \
+    (a) = (b);          \
+    (b) = _tmp;         \
+  }
+#define MAT(m, r, c) (m)[(c) * 4 + (r)]
 
   GLdouble wtmp[4][8];
   GLdouble m0, m1, m2, m3, s;
@@ -249,112 +249,157 @@ invertMatrix(GLdouble *out, const GLdouble *m)
 
   r0 = wtmp[0], r1 = wtmp[1], r2 = wtmp[2], r3 = wtmp[3];
 
-  r0[0] = MAT(m,0,0), r0[1] = MAT(m,0,1),
-    r0[2] = MAT(m,0,2), r0[3] = MAT(m,0,3),
-    r0[4] = 1.0, r0[5] = r0[6] = r0[7] = 0.0,
+  r0[0] = MAT(m, 0, 0), r0[1] = MAT(m, 0, 1), r0[2] = MAT(m, 0, 2),
+  r0[3] = MAT(m, 0, 3), r0[4] = 1.0, r0[5] = r0[6] = r0[7] = 0.0,
 
-    r1[0] = MAT(m,1,0), r1[1] = MAT(m,1,1),
-    r1[2] = MAT(m,1,2), r1[3] = MAT(m,1,3),
-    r1[5] = 1.0, r1[4] = r1[6] = r1[7] = 0.0,
+  r1[0] = MAT(m, 1, 0), r1[1] = MAT(m, 1, 1), r1[2] = MAT(m, 1, 2),
+  r1[3] = MAT(m, 1, 3), r1[5] = 1.0, r1[4] = r1[6] = r1[7] = 0.0,
 
-    r2[0] = MAT(m,2,0), r2[1] = MAT(m,2,1),
-    r2[2] = MAT(m,2,2), r2[3] = MAT(m,2,3),
-    r2[6] = 1.0, r2[4] = r2[5] = r2[7] = 0.0,
+  r2[0] = MAT(m, 2, 0), r2[1] = MAT(m, 2, 1), r2[2] = MAT(m, 2, 2),
+  r2[3] = MAT(m, 2, 3), r2[6] = 1.0, r2[4] = r2[5] = r2[7] = 0.0,
 
-    r3[0] = MAT(m,3,0), r3[1] = MAT(m,3,1),
-    r3[2] = MAT(m,3,2), r3[3] = MAT(m,3,3),
-    r3[7] = 1.0, r3[4] = r3[5] = r3[6] = 0.0;
+  r3[0] = MAT(m, 3, 0), r3[1] = MAT(m, 3, 1), r3[2] = MAT(m, 3, 2),
+  r3[3] = MAT(m, 3, 3), r3[7] = 1.0, r3[4] = r3[5] = r3[6] = 0.0;
 
   /* choose pivot - or die */
-  if (fabs(r3[0])>fabs(r2[0])) SWAP_ROWS(r3, r2);
-  if (fabs(r2[0])>fabs(r1[0])) SWAP_ROWS(r2, r1);
-  if (fabs(r1[0])>fabs(r0[0])) SWAP_ROWS(r1, r0);
+  if (fabs(r3[0]) > fabs(r2[0])) SWAP_ROWS(r3, r2);
+  if (fabs(r2[0]) > fabs(r1[0])) SWAP_ROWS(r2, r1);
+  if (fabs(r1[0]) > fabs(r0[0])) SWAP_ROWS(r1, r0);
   if (0.0 == r0[0]) {
     return GL_FALSE;
   }
 
   /* eliminate first variable     */
-  m1 = r1[0]/r0[0]; m2 = r2[0]/r0[0]; m3 = r3[0]/r0[0];
-  s = r0[1]; r1[1] -= m1 * s; r2[1] -= m2 * s; r3[1] -= m3 * s;
-  s = r0[2]; r1[2] -= m1 * s; r2[2] -= m2 * s; r3[2] -= m3 * s;
-  s = r0[3]; r1[3] -= m1 * s; r2[3] -= m2 * s; r3[3] -= m3 * s;
+  m1 = r1[0] / r0[0];
+  m2 = r2[0] / r0[0];
+  m3 = r3[0] / r0[0];
+  s = r0[1];
+  r1[1] -= m1 * s;
+  r2[1] -= m2 * s;
+  r3[1] -= m3 * s;
+  s = r0[2];
+  r1[2] -= m1 * s;
+  r2[2] -= m2 * s;
+  r3[2] -= m3 * s;
+  s = r0[3];
+  r1[3] -= m1 * s;
+  r2[3] -= m2 * s;
+  r3[3] -= m3 * s;
   s = r0[4];
-  if (s != 0.0) { r1[4] -= m1 * s; r2[4] -= m2 * s; r3[4] -= m3 * s; }
+  if (s != 0.0) {
+    r1[4] -= m1 * s;
+    r2[4] -= m2 * s;
+    r3[4] -= m3 * s;
+  }
   s = r0[5];
-  if (s != 0.0) { r1[5] -= m1 * s; r2[5] -= m2 * s; r3[5] -= m3 * s; }
+  if (s != 0.0) {
+    r1[5] -= m1 * s;
+    r2[5] -= m2 * s;
+    r3[5] -= m3 * s;
+  }
   s = r0[6];
-  if (s != 0.0) { r1[6] -= m1 * s; r2[6] -= m2 * s; r3[6] -= m3 * s; }
+  if (s != 0.0) {
+    r1[6] -= m1 * s;
+    r2[6] -= m2 * s;
+    r3[6] -= m3 * s;
+  }
   s = r0[7];
-  if (s != 0.0) { r1[7] -= m1 * s; r2[7] -= m2 * s; r3[7] -= m3 * s; }
+  if (s != 0.0) {
+    r1[7] -= m1 * s;
+    r2[7] -= m2 * s;
+    r3[7] -= m3 * s;
+  }
 
   /* choose pivot - or die */
-  if (fabs(r3[1])>fabs(r2[1])) SWAP_ROWS(r3, r2);
-  if (fabs(r2[1])>fabs(r1[1])) SWAP_ROWS(r2, r1);
+  if (fabs(r3[1]) > fabs(r2[1])) SWAP_ROWS(r3, r2);
+  if (fabs(r2[1]) > fabs(r1[1])) SWAP_ROWS(r2, r1);
   if (0.0 == r1[1]) {
     return GL_FALSE;
   }
 
   /* eliminate second variable */
-  m2 = r2[1]/r1[1]; m3 = r3[1]/r1[1];
-  r2[2] -= m2 * r1[2]; r3[2] -= m3 * r1[2];
-  r2[3] -= m2 * r1[3]; r3[3] -= m3 * r1[3];
-  s = r1[4]; if (0.0 != s) { r2[4] -= m2 * s; r3[4] -= m3 * s; }
-  s = r1[5]; if (0.0 != s) { r2[5] -= m2 * s; r3[5] -= m3 * s; }
-  s = r1[6]; if (0.0 != s) { r2[6] -= m2 * s; r3[6] -= m3 * s; }
-  s = r1[7]; if (0.0 != s) { r2[7] -= m2 * s; r3[7] -= m3 * s; }
+  m2 = r2[1] / r1[1];
+  m3 = r3[1] / r1[1];
+  r2[2] -= m2 * r1[2];
+  r3[2] -= m3 * r1[2];
+  r2[3] -= m2 * r1[3];
+  r3[3] -= m3 * r1[3];
+  s = r1[4];
+  if (0.0 != s) {
+    r2[4] -= m2 * s;
+    r3[4] -= m3 * s;
+  }
+  s = r1[5];
+  if (0.0 != s) {
+    r2[5] -= m2 * s;
+    r3[5] -= m3 * s;
+  }
+  s = r1[6];
+  if (0.0 != s) {
+    r2[6] -= m2 * s;
+    r3[6] -= m3 * s;
+  }
+  s = r1[7];
+  if (0.0 != s) {
+    r2[7] -= m2 * s;
+    r3[7] -= m3 * s;
+  }
 
   /* choose pivot - or die */
-  if (fabs(r3[2])>fabs(r2[2])) SWAP_ROWS(r3, r2);
+  if (fabs(r3[2]) > fabs(r2[2])) SWAP_ROWS(r3, r2);
   if (0.0 == r2[2]) {
     return GL_FALSE;
   }
 
   /* eliminate third variable */
-  m3 = r3[2]/r2[2];
-  r3[3] -= m3 * r2[3], r3[4] -= m3 * r2[4],
-    r3[5] -= m3 * r2[5], r3[6] -= m3 * r2[6],
-    r3[7] -= m3 * r2[7];
+  m3 = r3[2] / r2[2];
+  r3[3] -= m3 * r2[3], r3[4] -= m3 * r2[4], r3[5] -= m3 * r2[5],
+      r3[6] -= m3 * r2[6], r3[7] -= m3 * r2[7];
 
   /* last check */
   if (0.0 == r3[3]) {
     return GL_FALSE;
   }
 
-  s = 1.0/r3[3];              /* now back substitute row 3 */
-  r3[4] *= s; r3[5] *= s; r3[6] *= s; r3[7] *= s;
+  s = 1.0 / r3[3]; /* now back substitute row 3 */
+  r3[4] *= s;
+  r3[5] *= s;
+  r3[6] *= s;
+  r3[7] *= s;
 
-  m2 = r2[3];                 /* now back substitute row 2 */
-  s  = 1.0/r2[2];
+  m2 = r2[3]; /* now back substitute row 2 */
+  s = 1.0 / r2[2];
   r2[4] = s * (r2[4] - r3[4] * m2), r2[5] = s * (r2[5] - r3[5] * m2),
-    r2[6] = s * (r2[6] - r3[6] * m2), r2[7] = s * (r2[7] - r3[7] * m2);
+  r2[6] = s * (r2[6] - r3[6] * m2), r2[7] = s * (r2[7] - r3[7] * m2);
   m1 = r1[3];
-  r1[4] -= r3[4] * m1, r1[5] -= r3[5] * m1,
-    r1[6] -= r3[6] * m1, r1[7] -= r3[7] * m1;
+  r1[4] -= r3[4] * m1, r1[5] -= r3[5] * m1, r1[6] -= r3[6] * m1,
+      r1[7] -= r3[7] * m1;
   m0 = r0[3];
-  r0[4] -= r3[4] * m0, r0[5] -= r3[5] * m0,
-    r0[6] -= r3[6] * m0, r0[7] -= r3[7] * m0;
+  r0[4] -= r3[4] * m0, r0[5] -= r3[5] * m0, r0[6] -= r3[6] * m0,
+      r0[7] -= r3[7] * m0;
 
-  m1 = r1[2];                 /* now back substitute row 1 */
-  s  = 1.0/r1[1];
+  m1 = r1[2]; /* now back substitute row 1 */
+  s = 1.0 / r1[1];
   r1[4] = s * (r1[4] - r2[4] * m1), r1[5] = s * (r1[5] - r2[5] * m1),
-    r1[6] = s * (r1[6] - r2[6] * m1), r1[7] = s * (r1[7] - r2[7] * m1);
+  r1[6] = s * (r1[6] - r2[6] * m1), r1[7] = s * (r1[7] - r2[7] * m1);
   m0 = r0[2];
-  r0[4] -= r2[4] * m0, r0[5] -= r2[5] * m0,
-    r0[6] -= r2[6] * m0, r0[7] -= r2[7] * m0;
+  r0[4] -= r2[4] * m0, r0[5] -= r2[5] * m0, r0[6] -= r2[6] * m0,
+      r0[7] -= r2[7] * m0;
 
-  m0 = r0[1];                 /* now back substitute row 0 */
-  s  = 1.0/r0[0];
+  m0 = r0[1]; /* now back substitute row 0 */
+  s = 1.0 / r0[0];
   r0[4] = s * (r0[4] - r1[4] * m0), r0[5] = s * (r0[5] - r1[5] * m0),
-    r0[6] = s * (r0[6] - r1[6] * m0), r0[7] = s * (r0[7] - r1[7] * m0);
+  r0[6] = s * (r0[6] - r1[6] * m0), r0[7] = s * (r0[7] - r1[7] * m0);
 
-  MAT(out,0,0) = r0[4]; MAT(out,0,1) = r0[5],
-                          MAT(out,0,2) = r0[6]; MAT(out,0,3) = r0[7],
-                                                  MAT(out,1,0) = r1[4]; MAT(out,1,1) = r1[5],
-                                                                          MAT(out,1,2) = r1[6]; MAT(out,1,3) = r1[7],
-                                                                                                  MAT(out,2,0) = r2[4]; MAT(out,2,1) = r2[5],
-                                                                                                                          MAT(out,2,2) = r2[6]; MAT(out,2,3) = r2[7],
-                                                                                                                                                  MAT(out,3,0) = r3[4]; MAT(out,3,1) = r3[5],
-                                                                                                                                                                          MAT(out,3,2) = r3[6]; MAT(out,3,3) = r3[7];
+  MAT(out, 0, 0) = r0[4];
+  MAT(out, 0, 1) = r0[5], MAT(out, 0, 2) = r0[6];
+  MAT(out, 0, 3) = r0[7], MAT(out, 1, 0) = r1[4];
+  MAT(out, 1, 1) = r1[5], MAT(out, 1, 2) = r1[6];
+  MAT(out, 1, 3) = r1[7], MAT(out, 2, 0) = r2[4];
+  MAT(out, 2, 1) = r2[5], MAT(out, 2, 2) = r2[6];
+  MAT(out, 2, 3) = r2[7], MAT(out, 3, 0) = r3[4];
+  MAT(out, 3, 1) = r3[5], MAT(out, 3, 2) = r3[6];
+  MAT(out, 3, 3) = r3[7];
 
   return GL_TRUE;
 
@@ -369,12 +414,15 @@ invertMatrix(GLdouble *out, const GLdouble *m)
  f * Return GL_TRUE for success, GL_FALSE for failure (singular matrix)
 */
 
-GLboolean
-invertMatrixf(GLfloat *out, const GLfloat *m)
-{
+GLboolean invertMatrixf(GLfloat *out, const GLfloat *m) {
   /* NB. OpenGL Matrices are COLUMN major. */
-#define SWAP_ROWS(a, b) { GLdouble *_tmp = a; (a)=(b); (b)=_tmp; }
-#define MAT(m,r,c) (m)[(c)*4+(r)]
+#define SWAP_ROWS(a, b) \
+  {                     \
+    GLdouble *_tmp = a; \
+    (a) = (b);          \
+    (b) = _tmp;         \
+  }
+#define MAT(m, r, c) (m)[(c) * 4 + (r)]
 
   GLdouble wtmp[4][8];
   GLdouble m0, m1, m2, m3, s;
@@ -382,112 +430,157 @@ invertMatrixf(GLfloat *out, const GLfloat *m)
 
   r0 = wtmp[0], r1 = wtmp[1], r2 = wtmp[2], r3 = wtmp[3];
 
-  r0[0] = MAT(m,0,0), r0[1] = MAT(m,0,1),
-    r0[2] = MAT(m,0,2), r0[3] = MAT(m,0,3),
-    r0[4] = 1.0, r0[5] = r0[6] = r0[7] = 0.0,
+  r0[0] = MAT(m, 0, 0), r0[1] = MAT(m, 0, 1), r0[2] = MAT(m, 0, 2),
+  r0[3] = MAT(m, 0, 3), r0[4] = 1.0, r0[5] = r0[6] = r0[7] = 0.0,
 
-    r1[0] = MAT(m,1,0), r1[1] = MAT(m,1,1),
-    r1[2] = MAT(m,1,2), r1[3] = MAT(m,1,3),
-    r1[5] = 1.0, r1[4] = r1[6] = r1[7] = 0.0,
+  r1[0] = MAT(m, 1, 0), r1[1] = MAT(m, 1, 1), r1[2] = MAT(m, 1, 2),
+  r1[3] = MAT(m, 1, 3), r1[5] = 1.0, r1[4] = r1[6] = r1[7] = 0.0,
 
-    r2[0] = MAT(m,2,0), r2[1] = MAT(m,2,1),
-    r2[2] = MAT(m,2,2), r2[3] = MAT(m,2,3),
-    r2[6] = 1.0, r2[4] = r2[5] = r2[7] = 0.0,
+  r2[0] = MAT(m, 2, 0), r2[1] = MAT(m, 2, 1), r2[2] = MAT(m, 2, 2),
+  r2[3] = MAT(m, 2, 3), r2[6] = 1.0, r2[4] = r2[5] = r2[7] = 0.0,
 
-    r3[0] = MAT(m,3,0), r3[1] = MAT(m,3,1),
-    r3[2] = MAT(m,3,2), r3[3] = MAT(m,3,3),
-    r3[7] = 1.0, r3[4] = r3[5] = r3[6] = 0.0;
+  r3[0] = MAT(m, 3, 0), r3[1] = MAT(m, 3, 1), r3[2] = MAT(m, 3, 2),
+  r3[3] = MAT(m, 3, 3), r3[7] = 1.0, r3[4] = r3[5] = r3[6] = 0.0;
 
   /* choose pivot - or die */
-  if (fabs(r3[0])>fabs(r2[0])) SWAP_ROWS(r3, r2);
-  if (fabs(r2[0])>fabs(r1[0])) SWAP_ROWS(r2, r1);
-  if (fabs(r1[0])>fabs(r0[0])) SWAP_ROWS(r1, r0);
+  if (fabs(r3[0]) > fabs(r2[0])) SWAP_ROWS(r3, r2);
+  if (fabs(r2[0]) > fabs(r1[0])) SWAP_ROWS(r2, r1);
+  if (fabs(r1[0]) > fabs(r0[0])) SWAP_ROWS(r1, r0);
   if (0.0 == r0[0]) {
     return GL_FALSE;
   }
 
   /* eliminate first variable     */
-  m1 = r1[0]/r0[0]; m2 = r2[0]/r0[0]; m3 = r3[0]/r0[0];
-  s = r0[1]; r1[1] -= m1 * s; r2[1] -= m2 * s; r3[1] -= m3 * s;
-  s = r0[2]; r1[2] -= m1 * s; r2[2] -= m2 * s; r3[2] -= m3 * s;
-  s = r0[3]; r1[3] -= m1 * s; r2[3] -= m2 * s; r3[3] -= m3 * s;
+  m1 = r1[0] / r0[0];
+  m2 = r2[0] / r0[0];
+  m3 = r3[0] / r0[0];
+  s = r0[1];
+  r1[1] -= m1 * s;
+  r2[1] -= m2 * s;
+  r3[1] -= m3 * s;
+  s = r0[2];
+  r1[2] -= m1 * s;
+  r2[2] -= m2 * s;
+  r3[2] -= m3 * s;
+  s = r0[3];
+  r1[3] -= m1 * s;
+  r2[3] -= m2 * s;
+  r3[3] -= m3 * s;
   s = r0[4];
-  if (s != 0.0) { r1[4] -= m1 * s; r2[4] -= m2 * s; r3[4] -= m3 * s; }
+  if (s != 0.0) {
+    r1[4] -= m1 * s;
+    r2[4] -= m2 * s;
+    r3[4] -= m3 * s;
+  }
   s = r0[5];
-  if (s != 0.0) { r1[5] -= m1 * s; r2[5] -= m2 * s; r3[5] -= m3 * s; }
+  if (s != 0.0) {
+    r1[5] -= m1 * s;
+    r2[5] -= m2 * s;
+    r3[5] -= m3 * s;
+  }
   s = r0[6];
-  if (s != 0.0) { r1[6] -= m1 * s; r2[6] -= m2 * s; r3[6] -= m3 * s; }
+  if (s != 0.0) {
+    r1[6] -= m1 * s;
+    r2[6] -= m2 * s;
+    r3[6] -= m3 * s;
+  }
   s = r0[7];
-  if (s != 0.0) { r1[7] -= m1 * s; r2[7] -= m2 * s; r3[7] -= m3 * s; }
+  if (s != 0.0) {
+    r1[7] -= m1 * s;
+    r2[7] -= m2 * s;
+    r3[7] -= m3 * s;
+  }
 
   /* choose pivot - or die */
-  if (fabs(r3[1])>fabs(r2[1])) SWAP_ROWS(r3, r2);
-  if (fabs(r2[1])>fabs(r1[1])) SWAP_ROWS(r2, r1);
+  if (fabs(r3[1]) > fabs(r2[1])) SWAP_ROWS(r3, r2);
+  if (fabs(r2[1]) > fabs(r1[1])) SWAP_ROWS(r2, r1);
   if (0.0 == r1[1]) {
     return GL_FALSE;
   }
 
   /* eliminate second variable */
-  m2 = r2[1]/r1[1]; m3 = r3[1]/r1[1];
-  r2[2] -= m2 * r1[2]; r3[2] -= m3 * r1[2];
-  r2[3] -= m2 * r1[3]; r3[3] -= m3 * r1[3];
-  s = r1[4]; if (0.0 != s) { r2[4] -= m2 * s; r3[4] -= m3 * s; }
-  s = r1[5]; if (0.0 != s) { r2[5] -= m2 * s; r3[5] -= m3 * s; }
-  s = r1[6]; if (0.0 != s) { r2[6] -= m2 * s; r3[6] -= m3 * s; }
-  s = r1[7]; if (0.0 != s) { r2[7] -= m2 * s; r3[7] -= m3 * s; }
+  m2 = r2[1] / r1[1];
+  m3 = r3[1] / r1[1];
+  r2[2] -= m2 * r1[2];
+  r3[2] -= m3 * r1[2];
+  r2[3] -= m2 * r1[3];
+  r3[3] -= m3 * r1[3];
+  s = r1[4];
+  if (0.0 != s) {
+    r2[4] -= m2 * s;
+    r3[4] -= m3 * s;
+  }
+  s = r1[5];
+  if (0.0 != s) {
+    r2[5] -= m2 * s;
+    r3[5] -= m3 * s;
+  }
+  s = r1[6];
+  if (0.0 != s) {
+    r2[6] -= m2 * s;
+    r3[6] -= m3 * s;
+  }
+  s = r1[7];
+  if (0.0 != s) {
+    r2[7] -= m2 * s;
+    r3[7] -= m3 * s;
+  }
 
   /* choose pivot - or die */
-  if (fabs(r3[2])>fabs(r2[2])) SWAP_ROWS(r3, r2);
+  if (fabs(r3[2]) > fabs(r2[2])) SWAP_ROWS(r3, r2);
   if (0.0 == r2[2]) {
     return GL_FALSE;
   }
 
   /* eliminate third variable */
-  m3 = r3[2]/r2[2];
-  r3[3] -= m3 * r2[3], r3[4] -= m3 * r2[4],
-    r3[5] -= m3 * r2[5], r3[6] -= m3 * r2[6],
-    r3[7] -= m3 * r2[7];
+  m3 = r3[2] / r2[2];
+  r3[3] -= m3 * r2[3], r3[4] -= m3 * r2[4], r3[5] -= m3 * r2[5],
+      r3[6] -= m3 * r2[6], r3[7] -= m3 * r2[7];
 
   /* last check */
   if (0.0 == r3[3]) {
     return GL_FALSE;
   }
 
-  s = 1.0/r3[3];              /* now back substitute row 3 */
-  r3[4] *= s; r3[5] *= s; r3[6] *= s; r3[7] *= s;
+  s = 1.0 / r3[3]; /* now back substitute row 3 */
+  r3[4] *= s;
+  r3[5] *= s;
+  r3[6] *= s;
+  r3[7] *= s;
 
-  m2 = r2[3];                 /* now back substitute row 2 */
-  s  = 1.0/r2[2];
+  m2 = r2[3]; /* now back substitute row 2 */
+  s = 1.0 / r2[2];
   r2[4] = s * (r2[4] - r3[4] * m2), r2[5] = s * (r2[5] - r3[5] * m2),
-    r2[6] = s * (r2[6] - r3[6] * m2), r2[7] = s * (r2[7] - r3[7] * m2);
+  r2[6] = s * (r2[6] - r3[6] * m2), r2[7] = s * (r2[7] - r3[7] * m2);
   m1 = r1[3];
-  r1[4] -= r3[4] * m1, r1[5] -= r3[5] * m1,
-    r1[6] -= r3[6] * m1, r1[7] -= r3[7] * m1;
+  r1[4] -= r3[4] * m1, r1[5] -= r3[5] * m1, r1[6] -= r3[6] * m1,
+      r1[7] -= r3[7] * m1;
   m0 = r0[3];
-  r0[4] -= r3[4] * m0, r0[5] -= r3[5] * m0,
-    r0[6] -= r3[6] * m0, r0[7] -= r3[7] * m0;
+  r0[4] -= r3[4] * m0, r0[5] -= r3[5] * m0, r0[6] -= r3[6] * m0,
+      r0[7] -= r3[7] * m0;
 
-  m1 = r1[2];                 /* now back substitute row 1 */
-  s  = 1.0/r1[1];
+  m1 = r1[2]; /* now back substitute row 1 */
+  s = 1.0 / r1[1];
   r1[4] = s * (r1[4] - r2[4] * m1), r1[5] = s * (r1[5] - r2[5] * m1),
-    r1[6] = s * (r1[6] - r2[6] * m1), r1[7] = s * (r1[7] - r2[7] * m1);
+  r1[6] = s * (r1[6] - r2[6] * m1), r1[7] = s * (r1[7] - r2[7] * m1);
   m0 = r0[2];
-  r0[4] -= r2[4] * m0, r0[5] -= r2[5] * m0,
-    r0[6] -= r2[6] * m0, r0[7] -= r2[7] * m0;
+  r0[4] -= r2[4] * m0, r0[5] -= r2[5] * m0, r0[6] -= r2[6] * m0,
+      r0[7] -= r2[7] * m0;
 
-  m0 = r0[1];                 /* now back substitute row 0 */
-  s  = 1.0/r0[0];
+  m0 = r0[1]; /* now back substitute row 0 */
+  s = 1.0 / r0[0];
   r0[4] = s * (r0[4] - r1[4] * m0), r0[5] = s * (r0[5] - r1[5] * m0),
-    r0[6] = s * (r0[6] - r1[6] * m0), r0[7] = s * (r0[7] - r1[7] * m0);
+  r0[6] = s * (r0[6] - r1[6] * m0), r0[7] = s * (r0[7] - r1[7] * m0);
 
-  MAT(out,0,0) = r0[4]; MAT(out,0,1) = r0[5],
-                          MAT(out,0,2) = r0[6]; MAT(out,0,3) = r0[7],
-                                                  MAT(out,1,0) = r1[4]; MAT(out,1,1) = r1[5],
-                                                                          MAT(out,1,2) = r1[6]; MAT(out,1,3) = r1[7],
-                                                                                                  MAT(out,2,0) = r2[4]; MAT(out,2,1) = r2[5],
-                                                                                                                          MAT(out,2,2) = r2[6]; MAT(out,2,3) = r2[7],
-                                                                                                                                                  MAT(out,3,0) = r3[4]; MAT(out,3,1) = r3[5],
-                                                                                                                                                                          MAT(out,3,2) = r3[6]; MAT(out,3,3) = r3[7];
+  MAT(out, 0, 0) = r0[4];
+  MAT(out, 0, 1) = r0[5], MAT(out, 0, 2) = r0[6];
+  MAT(out, 0, 3) = r0[7], MAT(out, 1, 0) = r1[4];
+  MAT(out, 1, 1) = r1[5], MAT(out, 1, 2) = r1[6];
+  MAT(out, 1, 3) = r1[7], MAT(out, 2, 0) = r2[4];
+  MAT(out, 2, 1) = r2[5], MAT(out, 2, 2) = r2[6];
+  MAT(out, 2, 3) = r2[7], MAT(out, 3, 0) = r3[4];
+  MAT(out, 3, 1) = r3[5], MAT(out, 3, 2) = r3[6];
+  MAT(out, 3, 3) = r3[7];
 
   return GL_TRUE;
 
@@ -496,21 +589,17 @@ invertMatrixf(GLfloat *out, const GLfloat *m)
 }
 
 /* Transform "in" vector by "m" transform to compute "out" vector. */
-void
-transformPosition(Vector *out, Vector *in, float m[4][4])
-{
+void transformPosition(Vector *out, Vector *in, float m[4][4]) {
   float w;
 
   w = in->x * m[0][3] + in->y * m[1][3] + in->z * m[2][3] + m[3][3];
-  out->x = (in->x * m[0][0] + in->y * m[1][0] + in->z * m[2][0] + m[3][0])/w;
-  out->y = (in->x * m[0][1] + in->y * m[1][1] + in->z * m[2][1] + m[3][1])/w;
-  out->z = (in->x * m[0][2] + in->y * m[1][2] + in->z * m[2][2] + m[3][2])/w;
+  out->x = (in->x * m[0][0] + in->y * m[1][0] + in->z * m[2][0] + m[3][0]) / w;
+  out->y = (in->x * m[0][1] + in->y * m[1][1] + in->z * m[2][1] + m[3][1]) / w;
+  out->z = (in->x * m[0][2] + in->y * m[1][2] + in->z * m[2][2] + m[3][2]) / w;
 }
 
 /* dst = transpose(src) */
-void
-transposeMatrix(GLdouble dst[16], GLdouble src[16])
-{
+void transposeMatrix(GLdouble dst[16], GLdouble src[16]) {
   dst[0] = src[0];
   dst[1] = src[4];
   dst[2] = src[8];
@@ -533,9 +622,7 @@ transposeMatrix(GLdouble dst[16], GLdouble src[16])
 }
 
 /* dst = a + b */
-void
-addMatrices(GLdouble dst[16], GLdouble a[16], GLdouble b[16])
-{
+void addMatrices(GLdouble dst[16], GLdouble a[16], GLdouble b[16]) {
   dst[0] = a[0] + b[0];
   dst[1] = a[1] + b[1];
   dst[2] = a[2] + b[2];
@@ -560,11 +647,10 @@ addMatrices(GLdouble dst[16], GLdouble a[16], GLdouble b[16])
 /* Build a 4x4 matrix transform based on the parameters for gluLookAt.
  * Code lifted from Brian Paul's MesaGLU.
  */
-void
-buildLookAtMatrix(GLdouble eyex, GLdouble eyey, GLdouble eyez,
-                  GLdouble centerx, GLdouble centery, GLdouble centerz,
-                  GLdouble upx, GLdouble upy, GLdouble upz, GLdouble m[16])
-{
+void buildLookAtMatrix(GLdouble eyex, GLdouble eyey, GLdouble eyez,
+                       GLdouble centerx, GLdouble centery, GLdouble centerz,
+                       GLdouble upx, GLdouble upy, GLdouble upz,
+                       GLdouble m[16]) {
   GLdouble x[3], y[3], z[3];
   GLdouble mag;
 
@@ -574,8 +660,8 @@ buildLookAtMatrix(GLdouble eyex, GLdouble eyey, GLdouble eyez,
   z[0] = eyex - centerx;
   z[1] = eyey - centery;
   z[2] = eyez - centerz;
-  mag = sqrt( z[0]*z[0] + z[1]*z[1] + z[2]*z[2] );
-  if (mag) {  /* mpichler, 19950515 */
+  mag = sqrt(z[0] * z[0] + z[1] * z[1] + z[2] * z[2]);
+  if (mag) { /* mpichler, 19950515 */
     z[0] /= mag;
     z[1] /= mag;
     z[2] /= mag;
@@ -587,39 +673,51 @@ buildLookAtMatrix(GLdouble eyex, GLdouble eyey, GLdouble eyez,
   y[2] = upz;
 
   /* X vector = Y cross Z */
-  x[0] =  y[1]*z[2] - y[2]*z[1];
-  x[1] = -y[0]*z[2] + y[2]*z[0];
-  x[2] =  y[0]*z[1] - y[1]*z[0];
+  x[0] = y[1] * z[2] - y[2] * z[1];
+  x[1] = -y[0] * z[2] + y[2] * z[0];
+  x[2] = y[0] * z[1] - y[1] * z[0];
 
   /* Recompute Y = Z cross X */
-  y[0] =  z[1]*x[2] - z[2]*x[1];
-  y[1] = -z[0]*x[2] + z[2]*x[0];
-  y[2] =  z[0]*x[1] - z[1]*x[0];
+  y[0] = z[1] * x[2] - z[2] * x[1];
+  y[1] = -z[0] * x[2] + z[2] * x[0];
+  y[2] = z[0] * x[1] - z[1] * x[0];
 
   /* mpichler, 19950515 */
   /* cross product gives area of parallelogram, which is < 1.0 for
    * non-perpendicular unit-length vectors; so normalize x, y here
    */
 
-  mag = sqrt( x[0]*x[0] + x[1]*x[1] + x[2]*x[2] );
+  mag = sqrt(x[0] * x[0] + x[1] * x[1] + x[2] * x[2]);
   if (mag) {
     x[0] /= mag;
     x[1] /= mag;
     x[2] /= mag;
   }
 
-  mag = sqrt( y[0]*y[0] + y[1]*y[1] + y[2]*y[2] );
+  mag = sqrt(y[0] * y[0] + y[1] * y[1] + y[2] * y[2]);
   if (mag) {
     y[0] /= mag;
     y[1] /= mag;
     y[2] /= mag;
   }
 
-#define M(row,col)  m[col*4+row]
-  M(0,0) = x[0];  M(0,1) = x[1];  M(0,2) = x[2];  M(0,3) = -x[0]*eyex + -x[1]*eyey + -x[2]*eyez;
-  M(1,0) = y[0];  M(1,1) = y[1];  M(1,2) = y[2];  M(1,3) = -y[0]*eyex + -y[1]*eyey + -y[2]*eyez;
-  M(2,0) = z[0];  M(2,1) = z[1];  M(2,2) = z[2];  M(2,3) = -z[0]*eyex + -z[1]*eyey + -z[2]*eyez;
-  M(3,0) = 0.0;   M(3,1) = 0.0;   M(3,2) = 0.0;   M(3,3) = 1.0;
+#define M(row, col) m[col * 4 + row]
+  M(0, 0) = x[0];
+  M(0, 1) = x[1];
+  M(0, 2) = x[2];
+  M(0, 3) = -x[0] * eyex + -x[1] * eyey + -x[2] * eyez;
+  M(1, 0) = y[0];
+  M(1, 1) = y[1];
+  M(1, 2) = y[2];
+  M(1, 3) = -y[0] * eyex + -y[1] * eyey + -y[2] * eyez;
+  M(2, 0) = z[0];
+  M(2, 1) = z[1];
+  M(2, 2) = z[2];
+  M(2, 3) = -z[0] * eyex + -z[1] * eyey + -z[2] * eyez;
+  M(3, 0) = 0.0;
+  M(3, 1) = 0.0;
+  M(3, 2) = 0.0;
+  M(3, 3) = 1.0;
 #undef M
 }
 
@@ -637,45 +735,45 @@ buildLookAtMatrix(GLdouble eyex, GLdouble eyey, GLdouble eyez,
  */
 
 /* Specified parameters */
-#define LOOKUP_BITS    6   /* Number of mantissa bits for lookup */
-#define EXP_POS       23   /* Position of the exponent */
-#define EXP_BIAS     127   /* Bias of exponent */
+#define LOOKUP_BITS 6 /* Number of mantissa bits for lookup */
+#define EXP_POS 23    /* Position of the exponent */
+#define EXP_BIAS 127  /* Bias of exponent */
 /* The mantissa is assumed to be just down from the exponent */
 
 /* Derived parameters */
-#define LOOKUP_POS   (EXP_POS-LOOKUP_BITS)  /* Position of mantissa lookup */
-#define SEED_POS     (EXP_POS-8)            /* Position of mantissa seed */
-#define TABLE_SIZE   (2 << LOOKUP_BITS)     /* Number of entries in table */
-#define LOOKUP_MASK  (TABLE_SIZE - 1)           /* Mask for table input */
-#define GET_EXP(a)   (((a) >> EXP_POS) & 0xFF)  /* Extract exponent */
-#define SET_EXP(a)   ((a) << EXP_POS)           /* Set exponent */
-#define GET_EMANT(a) (((a) >> LOOKUP_POS) & LOOKUP_MASK)  /* Extended mantissa
-                                                           * MSB's */
-#define SET_MANTSEED(a) (((unsigned long)(a)) << SEED_POS)  /* Set mantissa
-                                                             * 8 MSB's */
+#define LOOKUP_POS (EXP_POS - LOOKUP_BITS)   /* Position of mantissa lookup */
+#define SEED_POS (EXP_POS - 8)               /* Position of mantissa seed */
+#define TABLE_SIZE (2 << LOOKUP_BITS)        /* Number of entries in table */
+#define LOOKUP_MASK (TABLE_SIZE - 1)         /* Mask for table input */
+#define GET_EXP(a) (((a) >> EXP_POS) & 0xFF) /* Extract exponent */
+#define SET_EXP(a) ((a) << EXP_POS)          /* Set exponent */
+#define GET_EMANT(a)                                       \
+  (((a) >> LOOKUP_POS) & LOOKUP_MASK) /* Extended mantissa \
+                                       * MSB's */
+#define SET_MANTSEED(a)                              \
+  (((unsigned long)(a)) << SEED_POS) /* Set mantissa \
+                                      * 8 MSB's */
 
 static unsigned char iSqrt[TABLE_SIZE];
 
 union _flint {
-  unsigned long    i;
-  float            f;
+  unsigned long i;
+  float f;
 } _fi, _fo;
 
-void
-makeInverseSqrtLookupTable(void)
-{
+void makeInverseSqrtLookupTable(void) {
   register long f;
   register unsigned char *h;
   union _flint fi, fo;
 
   h = iSqrt;
   for (f = 0, h = iSqrt; f < TABLE_SIZE; f++) {
-    fi.i = ((EXP_BIAS-1) << EXP_POS) | (f << LOOKUP_POS);
-    fo.f = (float) (1.0 / sqrt(fi.f));
-    *h++ = (unsigned char)
-      (((fo.i + (1<<(SEED_POS-2))) >> SEED_POS) & 0xFF); /* rounding */
+    fi.i = ((EXP_BIAS - 1) << EXP_POS) | (f << LOOKUP_POS);
+    fo.f = (float)(1.0 / sqrt(fi.f));
+    *h++ = (unsigned char)(((fo.i + (1 << (SEED_POS - 2))) >> SEED_POS) &
+                           0xFF); /* rounding */
   }
-  iSqrt[TABLE_SIZE / 2] = 0xFF;    /* Special case for 1.0 */
+  iSqrt[TABLE_SIZE / 2] = 0xFF; /* Special case for 1.0 */
 }
 
 /* Non-WinTel platforms don't need fastcall. */
@@ -684,32 +782,29 @@ makeInverseSqrtLookupTable(void)
 #endif
 
 /* The following returns the inverse square root. */
-static float FASTCALL
-invSqrt(float x)
-{
-  unsigned long a = ((union _flint*)(&x))->i;
+static float FASTCALL invSqrt(float x) {
+  unsigned long a = ((union _flint *)(&x))->i;
   float arg = x;
   union _flint seed;
   float r;
 
-  seed.i = SET_EXP(((3*EXP_BIAS-1) - GET_EXP(a)) >> 1)
-    | SET_MANTSEED(iSqrt[GET_EMANT(a)]);
+  seed.i = SET_EXP(((3 * EXP_BIAS - 1) - GET_EXP(a)) >> 1) |
+           SET_MANTSEED(iSqrt[GET_EMANT(a)]);
 
   /* Seed: accurate to LOOKUP_BITS */
   r = seed.f;
 
   /* First iteration: accurate to 2*LOOKUP_BITS */
-  r = (float) ((3.0 - r * r * arg) * r * 0.5);
+  r = (float)((3.0 - r * r * arg) * r * 0.5);
 
-#if 0  /* Wow!  We don't need this much precision! */
+#if 0 /* Wow!  We don't need this much precision! */
   /* Second iteration: accurate to 4*LOOKUP_BITS */
   r = (float) ((3.0 - r * r * arg) * r * 0.5);
 #endif
 
   return r;
 }
-void set_diffuse_path()
-{
+void set_diffuse_path() {
   glDisable(GL_BLEND);
   glDepthFunc(GL_LESS);
   glColorMask(1, 1, 1, 1);
@@ -720,11 +815,11 @@ void set_diffuse_path()
   glBindTexture(GL_TEXTURE_2D, texobj[0]);
   // glEnable(GL_REGISTER_COMBINERS_NV);
 
-  // initCombiners(M_PER_PIXEL_SELF_SHADOWING_RAMP, 0, 0.8); /* 0 = no specular */
+  // initCombiners(M_PER_PIXEL_SELF_SHADOWING_RAMP, 0, 0.8); /* 0 = no specular
+  // */
 }
 
-void set_decal_path()
-{
+void set_decal_path() {
   /*glEnable(GL_BLEND);
     glDepthFunc(GL_EQUAL);
     glBlendFunc(GL_DST_COLOR, GL_ZERO);
@@ -739,11 +834,9 @@ void set_decal_path()
   glEnable(GL_TEXTURE_2D);
   // glDisable(GL_REGISTER_COMBINERS_NV);
   glDisable(GL_LIGHTING);
-
 }
 
-void set_specular_path()
-{
+void set_specular_path() {
   glBlendFunc(GL_DST_ALPHA, GL_ONE);
   glEnable(GL_BLEND);
   glDepthFunc(GL_EQUAL);
@@ -755,11 +848,11 @@ void set_specular_path()
   glBindTexture(GL_TEXTURE_2D, texobj[0]);
   // glEnable(GL_REGISTER_COMBINERS_NV);
 
-  // initCombiners(M_PER_PIXEL_SELF_SHADOWING_RAMP, 1, 0.8); /* 1 = specular on */
+  // initCombiners(M_PER_PIXEL_SELF_SHADOWING_RAMP, 1, 0.8); /* 1 = specular on
+  // */
 }
 
-void disable_bumpmap_path()
-{
+void disable_bumpmap_path() {
   glDisable(GL_BLEND);
   glDepthFunc(GL_LESS);
   glColorMask(1, 1, 1, 1);
@@ -773,36 +866,26 @@ void disable_bumpmap_path()
 }
 
 // モーフィングの際の法線マップテクスチャのアップデート
-void updateTexture(double param)
-{
-  if ( anm_flag )
-    {
-      for ( int i = 0; i < sw * sh * sc; i++ )
-        {
-          tmp_texture[i] = (GLubyte)( src[i] * (1.0 - param) + dest[i] * param );
-        }
+void updateTexture(double param) {
+  if (anm_flag) {
+    for (int i = 0; i < sw * sh * sc; i++) {
+      tmp_texture[i] = (GLubyte)(src[i] * (1.0 - param) + dest[i] * param);
     }
+  }
 
-  glActiveTexture( GL_TEXTURE0 );
-  glBindTexture( GL_TEXTURE_2D, texobj[0] );
-  glTexSubImage2D( GL_TEXTURE_2D, 0,
-                   0, 0,
-                   sw, sh,
-                   GL_RGB, GL_UNSIGNED_BYTE, tmp_texture
-                   );
-
-
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, texobj[0]);
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, sw, sh, GL_RGB, GL_UNSIGNED_BYTE,
+                  tmp_texture);
 }
 
-void calcTexCoords( int col, int facenum,
-                    std::vector<double> *tcoords,
-                    int tex_height, int tex_size )
-{
+void calcTexCoords(int col, int facenum, std::vector<double> *tcoords,
+                   int tex_height, int tex_size) {
   // texture row has each 8 tiles
-  int xoffset = (TEXTURE_BORDER * 2 + tex_size) * (int) (facenum % 8);
-  int yoffset = (TEXTURE_BORDER * 2 + tex_size) * (int) (facenum / 8);
+  int xoffset = (TEXTURE_BORDER * 2 + tex_size) * (int)(facenum % 8);
+  int yoffset = (TEXTURE_BORDER * 2 + tex_size) * (int)(facenum / 8);
 
-  double step = (double) tex_size / (double)(col - 1);
+  double step = (double)tex_size / (double)(col - 1);
   for (int j = col; j >= 0; j--) {
     for (int i = 0; i < j; i++) {
       double t = TEXTURE_BORDER + i * step + yoffset;
@@ -814,76 +897,70 @@ void calcTexCoords( int col, int facenum,
   }
 }
 
-void updateTexCoords( int tex_height, int tex_size )
-{
-  int vcol = (int) pow(2, max_res) + 1;
-  for( int i = 0 ; i < patchnum; i++ )
-    {
-      std::vector<double> texcoords;
-      calcTexCoords( vcol, i, &texcoords, tex_height, tex_size );
-      patch[i].SetTexCoords(texcoords);
-    }
+void updateTexCoords(int tex_height, int tex_size) {
+  int vcol = (int)pow(2, max_res) + 1;
+  for (int i = 0; i < patchnum; i++) {
+    std::vector<double> texcoords;
+    calcTexCoords(vcol, i, &texcoords, tex_height, tex_size);
+    patch[i].SetTexCoords(texcoords);
+  }
 }
 
 /*** NORMALIZATION CUBE MAP CONSTRUCTION ***/
 
-static void
-getCubeVector(int i, int cubesize, int x, int y, float *vec)
-{
+static void getCubeVector(int i, int cubesize, int x, int y, float *vec) {
   float s, t, sc, tc, mag;
 
   s = ((float)x + 0.5) / (float)cubesize;
   t = ((float)y + 0.5) / (float)cubesize;
-  sc = s*2.0 - 1.0;
-  tc = t*2.0 - 1.0;
+  sc = s * 2.0 - 1.0;
+  tc = t * 2.0 - 1.0;
 
   switch (i) {
-  case 0:
-    vec[0] = 1.0;
-    vec[1] = -tc;
-    vec[2] = -sc;
-    break;
-  case 1:
-    vec[0] = -1.0;
-    vec[1] = -tc;
-    vec[2] = sc;
-    break;
-  case 2:
-    vec[0] = sc;
-    vec[1] = 1.0;
-    vec[2] = tc;
-    break;
-  case 3:
-    vec[0] = sc;
-    vec[1] = -1.0;
-    vec[2] = -tc;
-    break;
-  case 4:
-    vec[0] = sc;
-    vec[1] = -tc;
-    vec[2] = 1.0;
-    break;
-  case 5:
-    vec[0] = -sc;
-    vec[1] = -tc;
-    vec[2] = -1.0;
-    break;
+    case 0:
+      vec[0] = 1.0;
+      vec[1] = -tc;
+      vec[2] = -sc;
+      break;
+    case 1:
+      vec[0] = -1.0;
+      vec[1] = -tc;
+      vec[2] = sc;
+      break;
+    case 2:
+      vec[0] = sc;
+      vec[1] = 1.0;
+      vec[2] = tc;
+      break;
+    case 3:
+      vec[0] = sc;
+      vec[1] = -1.0;
+      vec[2] = -tc;
+      break;
+    case 4:
+      vec[0] = sc;
+      vec[1] = -tc;
+      vec[2] = 1.0;
+      break;
+    case 5:
+      vec[0] = -sc;
+      vec[1] = -tc;
+      vec[2] = -1.0;
+      break;
   }
 
-  mag = 1.0/sqrt(vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2]);
+  mag = 1.0 / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
   vec[0] *= mag;
   vec[1] *= mag;
   vec[2] *= mag;
 }
 
-void
-makeNormalizeVectorCubeMap(int size)
-{
+void makeNormalizeVectorCubeMap(int size) {
   float vector[3];
   int i, x, y;
   GLubyte *pixels;
 
-  pixels = (GLubyte*) malloc(size*size*3);
+  pixels = (GLubyte *)malloc(size * size * 3);
   if (pixels == NULL) {
     fprintf(stderr, "npeturb: malloc failed in makeNormalizedVectorCubeMap\n");
     exit(1);
@@ -900,13 +977,13 @@ makeNormalizeVectorCubeMap(int size)
     for (y = 0; y < size; y++) {
       for (x = 0; x < size; x++) {
         getCubeVector(i, size, x, y, vector);
-        pixels[3*(y*size+x) + 0] = 128 + 127*vector[0];
-        pixels[3*(y*size+x) + 1] = 128 + 127*vector[1];
-        pixels[3*(y*size+x) + 2] = 128 + 127*vector[2];
+        pixels[3 * (y * size + x) + 0] = 128 + 127 * vector[0];
+        pixels[3 * (y * size + x) + 1] = 128 + 127 * vector[1];
+        pixels[3 * (y * size + x) + 2] = 128 + 127 * vector[2];
       }
     }
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X_EXT+i, 0, GL_RGB8,
-                 size, size, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X_EXT + i, 0, GL_RGB8, size, size,
+                 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
   }
 
   print_glerror();
@@ -938,53 +1015,45 @@ readImage(char *filename)
 //    return 1;
 //  }
 
-void freeTextures( void )
-{
-  if ( src != NULL ) stbi_image_free(src);
-  if ( dest != NULL ) stbi_image_free(dest);
-  if ( tmp_texture != NULL ) free( tmp_texture );
+void freeTextures(void) {
+  if (src != NULL) stbi_image_free(src);
+  if (dest != NULL) stbi_image_free(dest);
+  if (tmp_texture != NULL) free(tmp_texture);
 }
 
 // 法線テクスチャの初期化
-int initTextures( int num )
-{
+int initTextures(int num) {
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   // デフォルトの画像の読み込み
 
-  if ( num == 0 )
-    { // 1024
-      src  = stb_load_image(src1024, sw, sh, sc);
-      dest = stb_load_image(trg1024, tw, th, tc);
-    }
-  else if ( num == 1 )
-    { // 512
-      src  = stb_load_image(src512, sw, sh, sc);
-      dest = stb_load_image(trg512, tw, th, tc);
-    }
-  else
-    { // 256
-      src  = stb_load_image(src256, sw, sh, sc);
-      dest = stb_load_image(trg256, tw, th, tc);
-    }
+  if (num == 0) {  // 1024
+    src = stb_load_image(src1024, sw, sh, sc);
+    dest = stb_load_image(trg1024, tw, th, tc);
+  } else if (num == 1) {  // 512
+    src = stb_load_image(src512, sw, sh, sc);
+    dest = stb_load_image(trg512, tw, th, tc);
+  } else {  // 256
+    src = stb_load_image(src256, sw, sh, sc);
+    dest = stb_load_image(trg256, tw, th, tc);
+  }
 
-  tmp_texture = (GLubyte *)malloc( sizeof(GLubyte) * sw * sh * sc );
-  for ( int i = 0; i < sw * sh * sc; i++ )
-    {
-      tmp_texture[i] = (GLubyte)(src[i] * (1.0 - pp) + dest[i] * pp);
-      //    tmp_texture[i] = (GLubyte) (src->pixels[i]);
-    }
+  tmp_texture = (GLubyte *)malloc(sizeof(GLubyte) * sw * sh * sc);
+  for (int i = 0; i < sw * sh * sc; i++) {
+    tmp_texture[i] = (GLubyte)(src[i] * (1.0 - pp) + dest[i] * pp);
+    //    tmp_texture[i] = (GLubyte) (src->pixels[i]);
+  }
 
-  glActiveTexture( GL_TEXTURE0 );
+  glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, texobj[0]);
 
-  //loadTexture( src, 0 );
+  // loadTexture( src, 0 );
   int mipmaps = 1;
-  if ( mipmaps ) {
-    gluBuild2DMipmaps(GL_TEXTURE_2D, sc, sw, sh,
-                      GL_RGB, GL_UNSIGNED_BYTE, tmp_texture );
+  if (mipmaps) {
+    gluBuild2DMipmaps(GL_TEXTURE_2D, sc, sw, sh, GL_RGB, GL_UNSIGNED_BYTE,
+                      tmp_texture);
   } else {
-    glTexImage2D(GL_TEXTURE_2D, 0, sc, sw, sh, 0,
-                 GL_RGB, GL_UNSIGNED_BYTE, tmp_texture );
+    glTexImage2D(GL_TEXTURE_2D, 0, sc, sw, sh, 0, GL_RGB, GL_UNSIGNED_BYTE,
+                 tmp_texture);
   }
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -1021,8 +1090,7 @@ void check_extension( void )
 }
 #endif
 
-int init()
-{
+int init() {
   glewInit();
 
   if (!GLEW_ARB_texture_env_combine) {
@@ -1103,7 +1171,7 @@ int init()
 
   glGenTextures(2, texobj);
 
-  initTextures( 2 );
+  initTextures(2);
 
 #if 0
   glActiveTexture(GL_TEXTURE0);
@@ -1130,26 +1198,28 @@ int init()
   // ノーマルマップ（接空間の法線）＝ SOURCE0
   glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE);
   // ライトベクトル or 固定ベクトル = SOURCE1
-  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR); // glColor で渡す
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB,
+            GL_PRIMARY_COLOR);  // glColor で渡す
 
   glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
   glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
 
   // RGB 結果は glColor と MODULATE される（環境光に影響）
   glEnable(GL_COLOR_MATERIAL);
-  glColor3f(.9f, .9f, .9f); // 白色 → ライトベクトルとして使う
+  glColor3f(.9f, .9f, .9f);  // 白色 → ライトベクトルとして使う
   // initCombiners(M_PER_PIXEL_SELF_SHADOWING_CLAMP, 0, 0.8);
 
   glActiveTexture(GL_TEXTURE1);
   // glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexID);
   glEnable(GL_TEXTURE_CUBE_MAP);
-  //makeNormalizeVectorCubeMap(32);
+  // makeNormalizeVectorCubeMap(32);
   glBindTexture(GL_TEXTURE_CUBE_MAP, texobj[1]);
 
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
   glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_ADD);  // DOT3出力と加算
-  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PREVIOUS);  // ユニット0のDOT3出力
-  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE);   // cube mapの反射色
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB,
+            GL_PREVIOUS);                                 // ユニット0のDOT3出力
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE);  // cube mapの反射色
 
   glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
   glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
@@ -1350,10 +1420,9 @@ initCombiners(int shadowing, int specular, GLfloat diffuse)
 
 /* ------------------------------------------------ */
 
-void drawPatch(int patchnum, double *light)
-{
-  //printf("light %f %f %f\n", light[0], light[1], light[2] );
-  if ( nrm_flag ) {
+void drawPatch(int patchnum, double *light) {
+  // printf("light %f %f %f\n", light[0], light[1], light[2] );
+  if (nrm_flag) {
     patch[patchnum].SetLightPos(light);
     set_diffuse_path();
     patch[patchnum].Render();
@@ -1361,255 +1430,229 @@ void drawPatch(int patchnum, double *light)
     set_decal_path();
     patch[patchnum].Render();
 
-    //set_specular_path();
-    //patch[patchnum].Render();
+    // set_specular_path();
+    // patch[patchnum].Render();
   } else {
     patch[patchnum].Render();
   }
-
 }
 
-void DrawPath(int c,int id)
-{
-
+void DrawPath(int c, int id) {
   glLineWidth(4.0);
   glBegin(GL_LINE_STRIP);
 
-  if(bez_flag ==1)
-    {
-      for(int i=0;i<(int)pathv.size();i++)
-        {
-          glVertex3d(pathv[i][id].x * 1.5,pathv[i][id].y * 1.5,pathv[i][id].z * 1.5);
-        }
+  if (bez_flag == 1) {
+    for (int i = 0; i < (int)pathv.size(); i++) {
+      glVertex3d(pathv[i][id].x * 1.5, pathv[i][id].y * 1.5,
+                 pathv[i][id].z * 1.5);
     }
-  else{
-    glVertex3d(pathv[0][id].x * 1.5,pathv[0][id].y * 1.5,pathv[0][id].z * 1.5);
-    glVertex3d(pathv[pathv.size()-1][id].x * 1.5,
-               pathv[pathv.size()-1][id].y * 1.5,pathv[pathv.size()-1][id].z * 1.5);
-
+  } else {
+    glVertex3d(pathv[0][id].x * 1.5, pathv[0][id].y * 1.5,
+               pathv[0][id].z * 1.5);
+    glVertex3d(pathv[pathv.size() - 1][id].x * 1.5,
+               pathv[pathv.size() - 1][id].y * 1.5,
+               pathv[pathv.size() - 1][id].z * 1.5);
   }
   glEnd();
 }
 
-void Morph( void )
-{
-  int current=0;
+void Morph(void) {
+  int current = 0;
   int i;
 
-  for(i=0;i<weight.size();i++)
-    {
-      if(pp<weight[i])break;
-    }
-  current = i;//どの点の間を見るか
+  for (i = 0; i < weight.size(); i++) {
+    if (pp < weight[i]) break;
+  }
+  current = i;  // どの点の間を見るか
 
-  if(pp>1.0)
-    {
-      pp=1.0;
-      current--;
-    }
+  if (pp > 1.0) {
+    pp = 1.0;
+    current--;
+  }
 
-  double dw = (pp-weight[current-1])/(weight[current]-weight[current-1]);
-  if(path_flag==1){
-    DrawPath(current,11); DrawPath(current,12);
+  double dw =
+      (pp - weight[current - 1]) / (weight[current] - weight[current - 1]);
+  if (path_flag == 1) {
+    DrawPath(current, 11);
+    DrawPath(current, 12);
   }
   std::vector<Vec3f> result;
   std::vector<double> tmp_pt, tmp_nm;
   result.clear();
-  for(i=0;i<(int)pathv[current].size();i++)
-    //cerr<<dw<<" "<<pp<<" "<<i<<" "<<(weight[current]-weight[current-1])<<" \n";
-    // ベース補間メッシュの結果を埋め込む
-    std::vector<double> tmp_pt,tmp_nm;
-  for(i=0;i<(int)pathv[current].size();i++)
-    {
+  for (i = 0; i < (int)pathv[current].size(); i++)
+    // cerr<<dw<<" "<<pp<<" "<<i<<" "<<(weight[current]-weight[current-1])<<"
+    // \n";
+    //  ベース補間メッシュの結果を埋め込む
+    std::vector<double> tmp_pt, tmp_nm;
+  for (i = 0; i < (int)pathv[current].size(); i++) {
+    Vec3f rv;
+    if (bez_flag == 1 && (i == 11 || i == 12)) {
+      rv.x = (1.0 - dw) * pathv[current - 1][i].x + dw * pathv[current][i].x;
+      rv.y = (1.0 - dw) * pathv[current - 1][i].y + dw * pathv[current][i].y;
+      rv.z = (1.0 - dw) * pathv[current - 1][i].z + dw * pathv[current][i].z;
+    } else {
+      rv.x = (1.0 - pp) * pathv[0][i].x + pp * pathv[pathv.size() - 1][i].x;
+      rv.y = (1.0 - pp) * pathv[0][i].y + pp * pathv[pathv.size() - 1][i].y;
+      rv.z = (1.0 - pp) * pathv[0][i].z + pp * pathv[pathv.size() - 1][i].z;
+    }
+    tmp_pt.push_back(rv.x);
+    tmp_pt.push_back(rv.y);
+    tmp_pt.push_back(rv.z);
+    result.push_back(rv);
+  }
 
-      Vec3f rv;
-      if(bez_flag==1&&(i==11 ||i ==12))
-        {
-          rv.x = (1.0-dw)*pathv[current-1][i].x+dw*pathv[current][i].x;
-          rv.y = (1.0-dw)*pathv[current-1][i].y+dw*pathv[current][i].y;
-          rv.z = (1.0-dw)*pathv[current-1][i].z+dw*pathv[current][i].z;
-        }
-      else
-        {
-          rv.x = (1.0-pp)*pathv[0][i].x+pp*pathv[pathv.size()-1][i].x;
-          rv.y = (1.0-pp)*pathv[0][i].y+pp*pathv[pathv.size()-1][i].y;
-          rv.z = (1.0-pp)*pathv[0][i].z+pp*pathv[pathv.size()-1][i].z;
-        }
-      tmp_pt.push_back(rv.x); tmp_pt.push_back(rv.y); tmp_pt.push_back(rv.z);
-      result.push_back(rv);
+  if (bm_flag == 1) {
+    for (i = 0; i < (int)bidx.size(); i += 1) {
+      double v0x = tmp_pt[bidx[i][1] * 3 + 0] - tmp_pt[bidx[i][0] * 3 + 0];
+      double v0y = tmp_pt[bidx[i][1] * 3 + 1] - tmp_pt[bidx[i][0] * 3 + 1];
+      double v0z = tmp_pt[bidx[i][1] * 3 + 2] - tmp_pt[bidx[i][0] * 3 + 2];
+      double v1x = tmp_pt[bidx[i][2] * 3 + 0] - tmp_pt[bidx[i][0] * 3 + 0];
+      double v1y = tmp_pt[bidx[i][2] * 3 + 1] - tmp_pt[bidx[i][0] * 3 + 1];
+      double v1z = tmp_pt[bidx[i][2] * 3 + 2] - tmp_pt[bidx[i][0] * 3 + 2];
+      double nx = v0y * v1z - v0z * v1y;
+      double ny = v0z * v1x - v0x * v1z;
+      double nz = v0x * v1y - v0y * v1x;
+
+      double dist = sqrt(nx * nx + ny * ny + nz * nz);
+
+      tmp_nm.push_back(nx / dist);
+      tmp_nm.push_back(ny / dist);
+      tmp_nm.push_back(nz / dist);
     }
 
-  if( bm_flag == 1 )
-    {
-      for(i= 0;i<(int)bidx.size();i+=1)
-        {
-          double v0x = tmp_pt[bidx[i][1]*3+0]-tmp_pt[bidx[i][0]*3+0];
-          double v0y = tmp_pt[bidx[i][1]*3+1]-tmp_pt[bidx[i][0]*3+1];
-          double v0z = tmp_pt[bidx[i][1]*3+2]-tmp_pt[bidx[i][0]*3+2];
-          double v1x = tmp_pt[bidx[i][2]*3+0]-tmp_pt[bidx[i][0]*3+0];
-          double v1y = tmp_pt[bidx[i][2]*3+1]-tmp_pt[bidx[i][0]*3+1];
-          double v1z = tmp_pt[bidx[i][2]*3+2]-tmp_pt[bidx[i][0]*3+2];
-          double nx= v0y*v1z-v0z*v1y;
-          double ny= v0z*v1x-v0x*v1z;
-          double nz= v0x*v1y-v0y*v1x;
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-          double dist = sqrt(nx*nx+ny*ny+nz*nz);
+    // glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+    // GLfloat bmat[] = {0.9,0.8,0.5,1.0};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,bmat);
 
-          tmp_nm.push_back(nx/dist);
-          tmp_nm.push_back(ny/dist);
-          tmp_nm.push_back(nz/dist);
-        }
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_DOUBLE, 0, &(tmp_pt[0]));
 
-      glEnable(GL_BLEND);
-      glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, light_diffuse);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, light_ambient);
 
-      // glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-      //GLfloat bmat[] = {0.9,0.8,0.5,1.0};
-      //glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,bmat);
-
-      glEnableClientState(GL_VERTEX_ARRAY);
-      glVertexPointer(3,GL_DOUBLE,0,&(tmp_pt[0]));
-
-      glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE, light_diffuse);
-      glMaterialfv(GL_FRONT,GL_AMBIENT,light_ambient);
-
-      glBegin(GL_TRIANGLES);
-      for(i=0;i<bidx.size();i++)
-        {
-          //double* np =tmp_nm.begin()+i*3;
-          double* np =&(tmp_nm[i*3]);
-          glNormal3dv(np);
-          glArrayElement(bidx[i][0]);
-          glArrayElement(bidx[i][1]);
-          glArrayElement(bidx[i][2]);
-        }
-      glEnd();
-      glDisableClientState(GL_VERTEX_ARRAY);
-      glDisable(GL_BLEND);
+    glBegin(GL_TRIANGLES);
+    for (i = 0; i < bidx.size(); i++) {
+      // double* np =tmp_nm.begin()+i*3;
+      double *np = &(tmp_nm[i * 3]);
+      glNormal3dv(np);
+      glArrayElement(bidx[i][0]);
+      glArrayElement(bidx[i][1]);
+      glArrayElement(bidx[i][2]);
     }
+    glEnd();
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisable(GL_BLEND);
+  }
   param.clear();
-  param.push_back(1.0-pp);
+  param.push_back(1.0 - pp);
   param.push_back(pp);
 
-  //if ( bumpmapping ) {
-  if ( nrm_flag )
-    {
-      //        if ( anm_flag )
-      updateTexture( pp );
-    }
-  else
-    {
-      disable_bumpmap_path();
-    }
+  // if ( bumpmapping ) {
+  if (nrm_flag) {
+    //        if ( anm_flag )
+    updateTexture(pp);
+  } else {
+    disable_bumpmap_path();
+  }
 
-  for( i = 0; i < patchnum; i++ )
-    {
-      patch[i].SetParam( param );
-      patch[i].SetEdit( result[bidx[i][0]],
-                        result[bidx[i][1]],
-                        result[bidx[i][2]]);
-    }
+  for (i = 0; i < patchnum; i++) {
+    patch[i].SetParam(param);
+    patch[i].SetEdit(result[bidx[i][0]], result[bidx[i][1]],
+                     result[bidx[i][2]]);
+  }
 
-  for ( i = 0; i < patchnum; i++ )
-    {
-      drawPatch( i, light_pos0 );
-      //        switch ( lightnum )
-      //  	{
-      //  	case 0:
-	
-      //  	  break;	
-      //  	case 1:
-      //  	  drawPatch(i, light_pos1);
-      //  	  break;	
-      //  	case 2:
-      //  	  drawPatch(i, light_pos2);
-      //  	  break;	
-      //  	default:
-      //  	  break;
-      //  	}
-    }	
+  for (i = 0; i < patchnum; i++) {
+    drawPatch(i, light_pos0);
+    //        switch ( lightnum )
+    //  	{
+    //  	case 0:
 
+    //  	  break;
+    //  	case 1:
+    //  	  drawPatch(i, light_pos1);
+    //  	  break;
+    //  	case 2:
+    //  	  drawPatch(i, light_pos2);
+    //  	  break;
+    //  	default:
+    //  	  break;
+    //  	}
+  }
 
-  if( anm_flag )
-    {
-      ppp++;
-      pp += STEP;
-    }
+  if (anm_flag) {
+    ppp++;
+    pp += STEP;
+  }
 }
 
-void DrawImage( int n )
-{
-
+void DrawImage(int n) {
   int pix_i, pix_j, pix_k;
   FILE *ppmf;
   GLubyte piximage[PIXSIZE][PIXSIZE][3];
   char filename[80];
-  if(n<10)sprintf(filename,"image00%d.ppm",n);
-  else if(n<100)sprintf(filename,"image0%d.ppm",n);
-  else sprintf(filename,"image%d.ppm",n);
+  if (n < 10)
+    sprintf(filename, "image00%d.ppm", n);
+  else if (n < 100)
+    sprintf(filename, "image0%d.ppm", n);
+  else
+    sprintf(filename, "image%d.ppm", n);
 
   glReadPixels(0, 0, PIXSIZE, PIXSIZE, GL_RGB, GL_UNSIGNED_BYTE, piximage);
 
-  ppmf=fopen(filename,"w");
+  ppmf = fopen(filename, "w");
 
-  fprintf(ppmf,"P6\n");
-  fprintf(ppmf,"%d %d\n",PIXSIZE,PIXSIZE);
+  fprintf(ppmf, "P6\n");
+  fprintf(ppmf, "%d %d\n", PIXSIZE, PIXSIZE);
   fclose(ppmf);
-  ppmf=fopen(filename,"ab");
-  fputc(50,ppmf);
-  fputc(53,ppmf);
-  fputc(53,ppmf);
-  fputc(10,ppmf);
+  ppmf = fopen(filename, "ab");
+  fputc(50, ppmf);
+  fputc(53, ppmf);
+  fputc(53, ppmf);
+  fputc(10, ppmf);
 
-  for(pix_j=0;pix_j<PIXSIZE;pix_j++)
-    for(pix_i=0;pix_i<PIXSIZE;pix_i++)
-      for(pix_k=0;pix_k<3;pix_k++)
-        fputc(piximage[PIXSIZE-1-pix_j][pix_i][pix_k],ppmf);
+  for (pix_j = 0; pix_j < PIXSIZE; pix_j++)
+    for (pix_i = 0; pix_i < PIXSIZE; pix_i++)
+      for (pix_k = 0; pix_k < 3; pix_k++)
+        fputc(piximage[PIXSIZE - 1 - pix_j][pix_i][pix_k], ppmf);
   fclose(ppmf);
 }
 
-
-
-
-
-void Create_Indexes(int col,std::vector<int>* fidx)
-{
+void Create_Indexes(int col, std::vector<int> *fidx) {
   int bb = 0;
   fidx->clear();
 
-  for(int i=0;i<col-1;i++)
-    {
-      int ub = bb;//全部の大きさ
-      bb =ub + col-i;
-      for(int j=0;j<col-i-1;j++)
-        {
-          fidx->push_back(ub+j);
-          fidx->push_back(ub+j+1);
-          fidx->push_back(bb+j);
-          if(j!=col-i-2)
-            {
-              fidx->push_back(bb+j);
-              fidx->push_back(ub+j+1);
-              fidx->push_back(bb+j+1);
-            }
-        }
+  for (int i = 0; i < col - 1; i++) {
+    int ub = bb;  // 全部の大きさ
+    bb = ub + col - i;
+    for (int j = 0; j < col - i - 1; j++) {
+      fidx->push_back(ub + j);
+      fidx->push_back(ub + j + 1);
+      fidx->push_back(bb + j);
+      if (j != col - i - 2) {
+        fidx->push_back(bb + j);
+        fidx->push_back(ub + j + 1);
+        fidx->push_back(bb + j + 1);
+      }
     }
+  }
   return;
 }
 
-GLfloat angle = 0.0, angle_beta=0.0;    /* Angle of rotation for object. */
-int moving, move_begin,begy;      /* For interactive object rotation. */
-int size = 1;           /* Size of lines and points. */
+GLfloat angle = 0.0, angle_beta = 0.0; /* Angle of rotation for object. */
+int moving, move_begin, begy;          /* For interactive object rotation. */
+int size = 1;                          /* Size of lines and points. */
 
-int bef=0;
-int now=0;
+int bef = 0;
+int now = 0;
 
 /*
   render gets called both by "display" (in OpenGL render mode)
 */
 
-void render( void )
-{
+void render(void) {
   //    int i;
   //    float mat[4]={1,1,1,1.0};
 
@@ -1617,30 +1660,27 @@ void render( void )
   glRotatef(angle, 0.0, 1.0, 0.0);
   glRotatef(angle_beta, 1.0, 0.0, 0.0);
 
-  if ( !(nrm_flag) )
-    {
-      glEnable( GL_LIGHTING );
-      glLightfv( GL_LIGHT0, GL_POSITION, light_position );
-    }
+  if (!(nrm_flag)) {
+    glEnable(GL_LIGHTING);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+  }
 
   Morph();
 
   glPopMatrix();
 }
 
-void display( void )
-{
+void display(void) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   render();
   // glutSwapBuffers();
 
-  if(img_flag == 1) DrawImage( ppp );
+  if (img_flag == 1) DrawImage(ppp);
   return;
 }
 
-static void error_callback(int error, const char* description)
-{
+static void error_callback(int error, const char *description) {
   fputs(description, stderr);
 }
 
@@ -1680,30 +1720,23 @@ void mouse( int button, int state, int x, int y )
     }
 }
 #endif
-static void mousebutton_callback(GLFWwindow* window, int button, int action, int mods)
-{
+static void mousebutton_callback(GLFWwindow *window, int button, int action,
+                                 int mods) {
   double xd, yd;
-  glfwGetCursorPos( window, &xd, &yd );
+  glfwGetCursorPos(window, &xd, &yd);
 
-  if ( (button == GLFW_MOUSE_BUTTON_1) && (action == GLFW_PRESS) )
-    {
-      left_button_pressed = true;
-      // moving = 1;
-      move_begin = (int)xd;
-    }
-  else if ( (button == GLFW_MOUSE_BUTTON_1) && (action == GLFW_RELEASE) )
-    {
-      left_button_pressed = false;
-      // moving = 0;
-    }
-  else if ( (button == GLFW_MOUSE_BUTTON_2) && (action == GLFW_PRESS) )
-    {
-      right_button_pressed = true;
-    }
-  else if ( (button == GLFW_MOUSE_BUTTON_2) && (action == GLFW_RELEASE) )
-    {
-      right_button_pressed = false;
-    }
+  if ((button == GLFW_MOUSE_BUTTON_1) && (action == GLFW_PRESS)) {
+    left_button_pressed = true;
+    // moving = 1;
+    move_begin = (int)xd;
+  } else if ((button == GLFW_MOUSE_BUTTON_1) && (action == GLFW_RELEASE)) {
+    left_button_pressed = false;
+    // moving = 0;
+  } else if ((button == GLFW_MOUSE_BUTTON_2) && (action == GLFW_PRESS)) {
+    right_button_pressed = true;
+  } else if ((button == GLFW_MOUSE_BUTTON_2) && (action == GLFW_RELEASE)) {
+    right_button_pressed = false;
+  }
 }
 
 #if 0
@@ -1734,147 +1767,125 @@ void key( unsigned char key , int x, int y )
     patch[i].Set_Resolution( res );
 }
 #endif
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
+static void key_callback(GLFWwindow *window, int key, int scancode, int action,
+                         int mods) {
   // ESC
-  if ( (key == GLFW_KEY_ESCAPE) && (action == GLFW_PRESS) )
-    {
-      freeTextures();
-      glfwSetWindowShouldClose(window, GL_TRUE);
-    }
+  if ((key == GLFW_KEY_ESCAPE) && (action == GLFW_PRESS)) {
+    freeTextures();
+    glfwSetWindowShouldClose(window, GL_TRUE);
+  }
 
   // q
-  else if ( (key == GLFW_KEY_Q) && (action == GLFW_PRESS) )
-    {
-      freeTextures();
-      glfwSetWindowShouldClose(window, GL_TRUE);
-    }
+  else if ((key == GLFW_KEY_Q) && (action == GLFW_PRESS)) {
+    freeTextures();
+    glfwSetWindowShouldClose(window, GL_TRUE);
+  }
 
   // 1: set texture resolution to 1024 x 1024
-  else if ( (key == GLFW_KEY_1) && (action == GLFW_PRESS) )
-    {
-      texture_height = TEXTURE_HEIGHT1024;
-      texture_size = TEXTURE_SIZE1024;
-      freeTextures();
-      initTextures( 0 );
-      std::cout << "texture resolution: 1024 x 1024" << std::endl;
-      updateTexCoords( texture_height, texture_size );
-    }
+  else if ((key == GLFW_KEY_1) && (action == GLFW_PRESS)) {
+    texture_height = TEXTURE_HEIGHT1024;
+    texture_size = TEXTURE_SIZE1024;
+    freeTextures();
+    initTextures(0);
+    std::cout << "texture resolution: 1024 x 1024" << std::endl;
+    updateTexCoords(texture_height, texture_size);
+  }
 
   // 2 set texture resolution to 512 x 512
-  else if ( (key == GLFW_KEY_2) && (action == GLFW_PRESS) )
-    {
-      texture_height = TEXTURE_HEIGHT512;
-      texture_size = TEXTURE_SIZE512;
-      freeTextures();
-      initTextures( 1 );
-      std::cout << "texture resolution: 512 x 512" << std::endl;
-      updateTexCoords( texture_height, texture_size );
-    }
+  else if ((key == GLFW_KEY_2) && (action == GLFW_PRESS)) {
+    texture_height = TEXTURE_HEIGHT512;
+    texture_size = TEXTURE_SIZE512;
+    freeTextures();
+    initTextures(1);
+    std::cout << "texture resolution: 512 x 512" << std::endl;
+    updateTexCoords(texture_height, texture_size);
+  }
 
   // 3 set texture resolution to 256 x 256
-  else if ( (key == GLFW_KEY_3) && (action == GLFW_PRESS) )
-    {
-      texture_height = TEXTURE_HEIGHT256;
-      texture_size = TEXTURE_SIZE256;
-      freeTextures();
-      initTextures( 2 );
-      std::cout << "texture resolution: 256 x 256" << std::endl;
-      updateTexCoords( texture_height, texture_size );
-    }
+  else if ((key == GLFW_KEY_3) && (action == GLFW_PRESS)) {
+    texture_height = TEXTURE_HEIGHT256;
+    texture_size = TEXTURE_SIZE256;
+    freeTextures();
+    initTextures(2);
+    std::cout << "texture resolution: 256 x 256" << std::endl;
+    updateTexCoords(texture_height, texture_size);
+  }
 
   // z: subdivision UP (max: 5)
-  else if ( (key == GLFW_KEY_Z) && (action == GLFW_PRESS) )
-    {
-      res++;
-      if( res > max_res ) res = max_res;
-      std::cout << "subdivision level: " << res << std::endl;
-      // 解像度レベルの制御
-      for( int i = 0; i < patchnum; i++ )
-        patch[i].Set_Resolution( res );
-    }
+  else if ((key == GLFW_KEY_Z) && (action == GLFW_PRESS)) {
+    res++;
+    if (res > max_res) res = max_res;
+    std::cout << "subdivision level: " << res << std::endl;
+    // 解像度レベルの制御
+    for (int i = 0; i < patchnum; i++) patch[i].Set_Resolution(res);
+  }
 
   // x: subdivision DOWN (min: 0)
-  else if ( (key == GLFW_KEY_X) && (action == GLFW_PRESS) ) // 解像度 DOWN
-    {
-      res--;
-      if( res < 0 ) res = 0;
-      std::cout << "subdivision level: " << res << std::endl;
-      // 解像度レベルの制御
-      for( int i = 0; i < patchnum; i++ )
-        patch[i].Set_Resolution( res );
-    }
+  else if ((key == GLFW_KEY_X) && (action == GLFW_PRESS))  // 解像度 DOWN
+  {
+    res--;
+    if (res < 0) res = 0;
+    std::cout << "subdivision level: " << res << std::endl;
+    // 解像度レベルの制御
+    for (int i = 0; i < patchnum; i++) patch[i].Set_Resolution(res);
+  }
 
   // n: toggle normal mapping
-  else if ( (key == GLFW_KEY_N) && (action == GLFW_PRESS) )
-    {
-      nrm_flag = 1 - nrm_flag;
-    }
+  else if ((key == GLFW_KEY_N) && (action == GLFW_PRESS)) {
+    nrm_flag = 1 - nrm_flag;
+  }
 
   // m: start morph
-  else if ( (key == GLFW_KEY_M) && (action == GLFW_PRESS) )
-    {
-      for( int i = 0; i < patchnum; i++ )
-        patch[i].ResetParam();
-      pp  = 0;
-      ppp = 0;
-      anm_flag = 1;
-    }
+  else if ((key == GLFW_KEY_M) && (action == GLFW_PRESS)) {
+    for (int i = 0; i < patchnum; i++) patch[i].ResetParam();
+    pp = 0;
+    ppp = 0;
+    anm_flag = 1;
+  }
 
   // p: display path
-  else if ( (key == GLFW_KEY_P) && (action == GLFW_PRESS) )
-    {
-      path_flag = 1 - path_flag;
-    }
+  else if ((key == GLFW_KEY_P) && (action == GLFW_PRESS)) {
+    path_flag = 1 - path_flag;
+  }
 
   // l: linear or bezier path
-  else if ( (key == GLFW_KEY_L) && (action == GLFW_PRESS) )
-    {
-      bez_flag = 1 - bez_flag;
-    }
+  else if ((key == GLFW_KEY_L) && (action == GLFW_PRESS)) {
+    bez_flag = 1 - bez_flag;
+  }
 
   // : display base mesh
-  else if ( (key == GLFW_KEY_B) && (action == GLFW_PRESS) )
-    {
-      bm_flag = 1 - bm_flag;
-    }
+  else if ((key == GLFW_KEY_B) && (action == GLFW_PRESS)) {
+    bm_flag = 1 - bm_flag;
+  }
 
   // : help
-  else if ( (key == GLFW_KEY_H) && (action == GLFW_PRESS) )
-    {
-      std::cout << "Key functions" << std::endl;
-      std::cout << "1: set texture resolution to 1024 x 1024" << std::endl;
-      std::cout << "2: set texture resolution to 512 x 512" << std::endl;
-      std::cout << "3: set texture resolution to 256 x 256" << std::endl;
-      std::cout << "z: subdivison up (max: 5)" << std::endl;
-      std::cout << "x: subdivison down (min: 0)" << std::endl;
-      std::cout << "m: start morph" << std::endl;
-      std::cout << "n: toggle normal mapping" << std::endl;
-      std::cout << "p: display path" << std::endl;
-      std::cout << "l: linear or bezier path" << std::endl;
-    }
+  else if ((key == GLFW_KEY_H) && (action == GLFW_PRESS)) {
+    std::cout << "Key functions" << std::endl;
+    std::cout << "1: set texture resolution to 1024 x 1024" << std::endl;
+    std::cout << "2: set texture resolution to 512 x 512" << std::endl;
+    std::cout << "3: set texture resolution to 256 x 256" << std::endl;
+    std::cout << "z: subdivison up (max: 5)" << std::endl;
+    std::cout << "x: subdivison down (min: 0)" << std::endl;
+    std::cout << "m: start morph" << std::endl;
+    std::cout << "n: toggle normal mapping" << std::endl;
+    std::cout << "p: display path" << std::endl;
+    std::cout << "l: linear or bezier path" << std::endl;
+  }
 
   // shift
-  else if ( (key == GLFW_KEY_LEFT_SHIFT ) && (action == GLFW_PRESS) )
-    {
-      shift_key_pressed = true;
-    }
-  else if ( (key == GLFW_KEY_LEFT_SHIFT ) && (action == GLFW_RELEASE) )
-    {
-      shift_key_pressed = false;
-    }
+  else if ((key == GLFW_KEY_LEFT_SHIFT) && (action == GLFW_PRESS)) {
+    shift_key_pressed = true;
+  } else if ((key == GLFW_KEY_LEFT_SHIFT) && (action == GLFW_RELEASE)) {
+    shift_key_pressed = false;
+  }
 
   // control
-  else if ( (key == GLFW_KEY_LEFT_CONTROL ) && (action == GLFW_PRESS) )
-    {
-      control_key_pressed = true;
-    }
-  else if ( (key == GLFW_KEY_LEFT_CONTROL ) && (action == GLFW_RELEASE) )
-    {
-      control_key_pressed = false;
-    }
+  else if ((key == GLFW_KEY_LEFT_CONTROL) && (action == GLFW_PRESS)) {
+    control_key_pressed = true;
+  } else if ((key == GLFW_KEY_LEFT_CONTROL) && (action == GLFW_RELEASE)) {
+    control_key_pressed = false;
+  }
 }
-
 
 /* ARGSUSED1 */
 #if 0
@@ -1891,38 +1902,31 @@ motion(int x, int y)
   }
 }
 #endif
-static void cursorpos_callback(GLFWwindow* window, double xd, double yd )
-{
-  int x = (int) xd;
-  int y = (int) yd;
+static void cursorpos_callback(GLFWwindow *window, double xd, double yd) {
+  int x = (int)xd;
+  int y = (int)yd;
 
-  if ( left_button_pressed && !shift_key_pressed && !control_key_pressed )
-    {
-      // if (moving) {
-      angle = angle + (x - move_begin);
-      move_begin = x;
-      angle_beta = angle_beta+(y-begy);
-      begy=y;
-      // }
-    }
-  else if ( left_button_pressed && shift_key_pressed && !control_key_pressed )
-    {
-    }
-  else if ( left_button_pressed && !shift_key_pressed && control_key_pressed )
-    {
-    }
+  if (left_button_pressed && !shift_key_pressed && !control_key_pressed) {
+    // if (moving) {
+    angle = angle + (x - move_begin);
+    move_begin = x;
+    angle_beta = angle_beta + (y - begy);
+    begy = y;
+    // }
+  } else if (left_button_pressed && shift_key_pressed && !control_key_pressed) {
+  } else if (left_button_pressed && !shift_key_pressed && control_key_pressed) {
+  }
 }
 
 // mouse wheel
-static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
+static void scroll_callback(GLFWwindow *window, double xoffset,
+                            double yoffset) {
   // cout << yoffset << endl;
   // pane.updateWheelZoom( yoffset );
 }
 
 // window resize
-static void windowsize_callback(GLFWwindow* window, int w, int h )
-{
+static void windowsize_callback(GLFWwindow *window, int w, int h) {
   // PIXSIZE = w;
   // PIXSIZE = h;
 }
@@ -2010,125 +2014,112 @@ void choice( int value )
 }
 #endif
 
-int main( int argc, char **argv )
-{
+int main(int argc, char **argv) {
   int i, j;
 
   // glutInit(&argc, argv);
-  // glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB | GLUT_ALPHA | GLUT_ACCUM);
+  // glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB | GLUT_ALPHA |
+  // GLUT_ACCUM);
 
-  if(argc > 0)//  if(argc>2)
-    {
-      int mapn;
-      //      FILE* fp = fopen(argv[1],"r");
+  if (argc > 0)  //  if(argc>2)
+  {
+    int mapn;
+    //      FILE* fp = fopen(argv[1],"r");
 
-      FILE* fp;
-      if ( (fp = fopen("veti.mim","r")) == NULL ) {
-        fprintf(stderr, "file not found!\n");
-        exit(1);
-      }
-      fscanf(fp,"%d %d %d", &(max_res), &(patchnum), &(mapn) );
-      int vcol = (int) pow(2, max_res) + 1;
-
-      for(i = 0; i < patchnum; i++ )
-        {
-          std::vector<double> pos;
-          for(j=0;j<vcol*(vcol+1)/2*3;j++)
-            {
-              double val ;
-              fscanf(fp,"%lf",&val);
-              pos.push_back(val);
-            }
-          srcv.push_back(pos);
-          pos.clear();
-
-        }
-
-      for( i = 0; i < patchnum; i++ )
-        {
-          std::vector<double> pos;
-          for( j = 0; j < vcol*(vcol+1)/2*3; j++ )
-            {
-              double val ;
-              fscanf(fp, "%lf", &(val) );
-              pos.push_back( val );
-            }
-          patch.push_back( MR_Patch(srcv[i], pos, max_res) );
-          srcv[i].clear();
-          pos.clear();
-
-          //  texcoords.clear();
-          std::vector<double> texcoords;
-          calcTexCoords( vcol, i, &texcoords, texture_height, texture_size );
-          patch[i].SetTexCoords(texcoords);
-
-        }
-
-      srcv.clear();
-      //fclose(fp);
-      //      Read　Path　File
-      //fp = fopen("veti_5.pth","r");
-      int vnum,pnum;
-      fscanf(fp,"%d %d",&vnum,&pnum);
-      weight.clear();
-      for(i = 0;i<pnum;i++)
-        {
-          double dw;
-          fscanf(fp,"%lf",&dw);
-          weight.push_back(dw);
-        }
-      for(j = 0;j<pnum;j++)
-        {
-          std::vector<Vec3f> dvec;
-          for(i = 0;i<vnum;i++)
-            {
-              Vec3f v;
-              fscanf(fp,"%lf%lf%lf",&(v.x),&(v.y),&(v.z));
-              dvec.push_back(v);
-            }
-          pathv.push_back(dvec);
-          dvec.clear();
-        }
-      for(i = 0;i<patchnum;i++)
-        {
-          std::vector<int> idxtmp;
-          for(j=0;j<3;j++)
-            {
-              int i;
-              fscanf(fp,"%d", &i);
-              idxtmp.push_back(i);
-            }
-          bidx.push_back(idxtmp);
-          idxtmp.clear();
-        }
-      fclose(fp);
+    FILE *fp;
+    if ((fp = fopen("veti.mim", "r")) == NULL) {
+      fprintf(stderr, "file not found!\n");
+      return EXIT_FAILURE;
     }
-  else{
-    fprintf(stderr, "usage:%s filename\n",argv[0]);
-    exit(1);
+    fscanf(fp, "%d %d %d", &(max_res), &(patchnum), &(mapn));
+    int vcol = (int)pow(2, max_res) + 1;
+
+    for (i = 0; i < patchnum; i++) {
+      std::vector<double> pos;
+      for (j = 0; j < vcol * (vcol + 1) / 2 * 3; j++) {
+        double val;
+        fscanf(fp, "%lf", &val);
+        pos.push_back(val);
+      }
+      srcv.push_back(pos);
+      pos.clear();
+    }
+
+    for (i = 0; i < patchnum; i++) {
+      std::vector<double> pos;
+      for (j = 0; j < vcol * (vcol + 1) / 2 * 3; j++) {
+        double val;
+        fscanf(fp, "%lf", &(val));
+        pos.push_back(val);
+      }
+      patch.push_back(MR_Patch(srcv[i], pos, max_res));
+      srcv[i].clear();
+      pos.clear();
+
+      //  texcoords.clear();
+      std::vector<double> texcoords;
+      calcTexCoords(vcol, i, &texcoords, texture_height, texture_size);
+      patch[i].SetTexCoords(texcoords);
+    }
+
+    srcv.clear();
+    // fclose(fp);
+    //       Read　Path　File
+    // fp = fopen("veti_5.pth","r");
+    int vnum, pnum;
+    fscanf(fp, "%d %d", &vnum, &pnum);
+    weight.clear();
+    for (i = 0; i < pnum; i++) {
+      double dw;
+      fscanf(fp, "%lf", &dw);
+      weight.push_back(dw);
+    }
+    for (j = 0; j < pnum; j++) {
+      std::vector<Vec3f> dvec;
+      for (i = 0; i < vnum; i++) {
+        Vec3f v;
+        fscanf(fp, "%lf%lf%lf", &(v.x), &(v.y), &(v.z));
+        dvec.push_back(v);
+      }
+      pathv.push_back(dvec);
+      dvec.clear();
+    }
+    for (i = 0; i < patchnum; i++) {
+      std::vector<int> idxtmp;
+      for (j = 0; j < 3; j++) {
+        int i;
+        fscanf(fp, "%d", &i);
+        idxtmp.push_back(i);
+      }
+      bidx.push_back(idxtmp);
+      idxtmp.clear();
+    }
+    fclose(fp);
+  } else {
+    fprintf(stderr, "usage:%s filename\n", argv[0]);
+    return EXIT_FAILURE;
   }
 
   // 解像度レベルの制御
-  for( i = 0; i < patchnum; i++ )
-    patch[i].Set_Resolution( res );
+  for (i = 0; i < patchnum; i++) patch[i].Set_Resolution(res);
 
   // GLFW
   glfwSetErrorCallback(error_callback);
-  if ( !glfwInit() ) return EXIT_FAILURE;
+  if (!glfwInit()) return EXIT_FAILURE;
 
-  GLFWwindow* window = glfwCreateWindow( PIXSIZE, PIXSIZE, "MIMesh Demo", NULL, NULL );
-  if ( !window )
-    {
-      glfwTerminate();
-      return EXIT_FAILURE;
-    }
+  GLFWwindow *window =
+      glfwCreateWindow(PIXSIZE, PIXSIZE, "MIMesh Demo", NULL, NULL);
+  if (!window) {
+    glfwTerminate();
+    return EXIT_FAILURE;
+  }
 
-  glfwMakeContextCurrent( window );
-  glfwSetKeyCallback( window, key_callback );
-  glfwSetMouseButtonCallback( window, mousebutton_callback );
-  glfwSetCursorPosCallback( window, cursorpos_callback );
-  glfwSetScrollCallback( window, scroll_callback );
-  glfwSetWindowSizeCallback( window, windowsize_callback );
+  glfwMakeContextCurrent(window);
+  glfwSetKeyCallback(window, key_callback);
+  glfwSetMouseButtonCallback(window, mousebutton_callback);
+  glfwSetCursorPosCallback(window, cursorpos_callback);
+  glfwSetScrollCallback(window, scroll_callback);
+  glfwSetWindowSizeCallback(window, windowsize_callback);
 
   glfwSwapInterval(0);
 
@@ -2169,7 +2160,7 @@ int main( int argc, char **argv )
   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
   glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-  //glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+  // glLightfv(GL_LIGHT0, GL_POSITION, light_position);
   glEnable(GL_LIGHT0);
 
 #if 0
@@ -2183,41 +2174,40 @@ int main( int argc, char **argv )
   glEnable(GL_LIGHT3);
 #endif
 
-  //glEnable(GL_LIGHTING);
+  // glEnable(GL_LIGHTING);
   glDisable(GL_LIGHTING);
 
   glMatrixMode(GL_PROJECTION);
-  gluPerspective( /* field of view in degree */ 22.0,
-                  /* aspect ratio */ 1.0,
-                  /* Z near */ 5.0, /* Z far */ 10.0);
+  gluPerspective(/* field of view in degree */ 22.0,
+                 /* aspect ratio */ 1.0,
+                 /* Z near */ 5.0, /* Z far */ 10.0);
   glMatrixMode(GL_MODELVIEW);
-  gluLookAt(0.0, 0.0, 3.0,  /* eye is at (0,0,5) */
-            0.0, 0.0, 0.0,      /* center is at (0,0,0) */
-            0.0, 1.0, 0.);      /* up is in postivie Y direction */
+  gluLookAt(0.0, 0.0, 3.0, /* eye is at (0,0,5) */
+            0.0, 0.0, 0.0, /* center is at (0,0,0) */
+            0.0, 1.0, 0.); /* up is in postivie Y direction */
   glTranslatef(0.0, 0.0, -3.0);
   /* Give the object an "interesting" orientation. */
   glEnable(GL_DEPTH_TEST);
 
-  glClearColor( 1.0f, 1.0f, 1.0f, 0.0 );
-  glClearDepth( 1.0f );
+  glClearColor(1.0f, 1.0f, 1.0f, 0.0);
+  glClearDepth(1.0f);
 
   glClearAccum(0.0, 0.0, 0.0, 0.0);
   //    glPolygonMode( GL_FRONT_AND_BACK, GL_POLYGON );
 
-  //glutMainLoop();
-  // GLFW rendering process
-  while ( !glfwWindowShouldClose(window) )
-    {
-      if ( rotate_light_flag ) {
-        light_angle += 0.1;
-        if (light_angle > 2 * 3.141592) light_angle = 0.0;
-      }
-
-      display();
-
-      glfwSwapBuffers(window);
-      glfwPollEvents();
+  // glutMainLoop();
+  //  GLFW rendering process
+  while (!glfwWindowShouldClose(window)) {
+    if (rotate_light_flag) {
+      light_angle += 0.1;
+      if (light_angle > 2 * 3.141592) light_angle = 0.0;
     }
+
+    display();
+
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+  }
 
   glfwDestroyWindow(window);
   glfwTerminate();
